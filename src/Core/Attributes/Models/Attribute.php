@@ -52,6 +52,11 @@ class Attribute extends BaseModel
         }
     }
 
+    public function scopeHandle($query, $handle)
+    {
+        return $query->where('handle', 'LIKE', '%'.$handle.'%');
+    }
+
     public function getLookupsAttribute($value)
     {
         return json_decode($value, true);

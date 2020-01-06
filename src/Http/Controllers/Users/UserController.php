@@ -66,9 +66,16 @@ class UserController extends BaseController
 
     public function getCurrentUser(Request $request)
     {
-        $user = $request->user()->with('roles.permissions')->first();
+        $user = $this->users->getByHashedId(
+            $request->user()->encodedId()
+        );
 
-        return new UserResource($user);
+        return new UserResource(
+            $request->user()->load([
+                'addresses', 'roles.permissions', 'details'
+            ])
+        );
+        return $this->respondWithItem($user, new UserTransformer);
     }
 
     public function update($userId, UpdateRequest $request)

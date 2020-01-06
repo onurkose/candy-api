@@ -226,12 +226,9 @@ class OrderFactory implements OrderFactoryInterface
         if (! empty($this->includes) && is_array($this->includes)) {
             $order->load($this->includes);
         }
-
         $order->save();
-        $order->basketLines()->delete();
-
-        $this->resolveDiscounts($order);
         $this->resolveLines($order);
+        $this->resolveDiscounts($order);
 
         if ($this->shipping) {
             $this->addShippingLine($order);
@@ -248,27 +245,42 @@ class OrderFactory implements OrderFactoryInterface
      * @param Order $order
      * @return Order
      */
-    protected function resolveLines($order)
+    protected function resolveLines(&$order)
     {
         $lines = [];
-        foreach ($this->basket->lines as $line) {
-            array_push($lines, [
-                'product_variant_id' => $line->variant->id,
-                'sku' => $line->variant->sku,
-                'tax_total' => $line->total_tax * 100,
-                'tax_rate' => $line->variant->tax->percentage,
-                'discount_total' => $line->discount_total * 100 ?? 0,
-                'line_total' => $line->total_cost * 100,
-                'unit_price' => $line->base_cost * 100,
-                'unit_qty' => $line->variant->unit_qty,
-                'quantity' => $line->quantity,
-                'description' => $line->variant->product->attribute('name'),
-                'option' => $line->variant->name,
-                'meta' => $line->meta,
-            ]);
-        }
-        $order->lines()->createMany($lines);
 
+        // Remove any lines that don't exist.
+        $removedLines = $order->basketLines->reject(function ($line) {
+            return $this->basket->lines->pluck('variant.sku')->contains($line->sku);
+        })->each(function ($line) {
+            $line->delete();
+        });
+
+        foreach ($this->basket->lines as $basketLine) {
+            $line = $order->basketLines->first(function ($line) use ($basketLine) {
+                return $basketLine->variant->sku == $line->sku;
+            });
+            if (!$line) {
+                $line = new OrderLine;
+            }
+            $line->fill([
+                'order_id' => $order->id,
+                'product_variant_id' => $basketLine->variant->id,
+                'sku' => $basketLine->variant->sku,
+                'tax_total' => $basketLine->total_tax * 100,
+                'tax_rate' => $basketLine->variant->tax->percentage,
+                'discount_total' => $basketLine->discount_total * 100 ?? 0,
+                'line_total' => $basketLine->total_cost * 100,
+                'unit_price' => $basketLine->base_cost * 100,
+                'unit_qty' => $basketLine->variant->unit_qty,
+                'quantity' => $basketLine->quantity,
+                'description' => $basketLine->variant->product->attribute('name'),
+                'option' => $basketLine->variant->name,
+                'meta' => $basketLine->meta,
+            ]);
+
+            $line->save();
+        }
         return $order;
     }
 
@@ -426,7 +438,7 @@ class OrderFactory implements OrderFactoryInterface
      * @param Order $order
      * @return Order
      */
-    protected function addShippingLine($order)
+    protected function addShippingLine(&$order)
     {
         $updateFields = [
             'shipping_method' => $this->shipping->method->name,
@@ -446,7 +458,7 @@ class OrderFactory implements OrderFactoryInterface
         $basket = $this->basket;
 
         // Remove any shipping lines already on there.
-        $existing = $order->lines()->where('is_shipping', '=', true)->first();
+        $existing = $order->lines()->where('is_shipping', '=', true)->where('is_manual', '=', false)->first();
 
         if ($existing) {
             $existing->delete();
@@ -479,7 +491,7 @@ class OrderFactory implements OrderFactoryInterface
      * @param Order $order
      * @return Order
      */
-    protected function resolveDiscounts($order)
+    protected function resolveDiscounts(&$order)
     {
         $order->discounts()->delete();
         $basket = $this->basket;

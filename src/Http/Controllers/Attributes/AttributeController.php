@@ -11,6 +11,8 @@ use GetCandy\Api\Http\Transformers\Fractal\Attributes\AttributeTransformer;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use GetCandy\Api\Http\Resources\Attributes\AttributeCollection;
+use GetCandy\Api\Core\Attributes\Models\Attribute;
 
 class AttributeController extends BaseController
 {
@@ -20,8 +22,15 @@ class AttributeController extends BaseController
      */
     public function index(Request $request)
     {
-        $attributes = app('api')->attributes()->getPaginatedData($request->per_page);
+        // $attributes = app('api')->attributes()->getPaginatedData($request->per_page);
 
+        $attributes = new Attribute;
+
+        if ($request->handle) {
+            $attributes = $attributes->handle($request->handle);
+        }
+
+        return new AttributeCollection($attributes->with($request->includes)->paginate($request->per_page));
         return $this->respondWithCollection($attributes, new AttributeTransformer);
     }
 

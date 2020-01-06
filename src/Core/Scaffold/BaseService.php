@@ -128,9 +128,14 @@ abstract class BaseService
      * @param  int  $page   The page to start
      * @return Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getPaginatedData($length = 50, $page = null)
+    public function getPaginatedData($length = 50, $page = null, $relations = null)
     {
-        return $this->model->orderBy('created_at', 'desc')->paginate($length, ['*'], 'page', $page);
+        $query = $this->model->orderBy('created_at', 'desc');
+
+        if ($relations) {
+            $query->with($relations);
+        }
+        return $query->paginate($length, ['*'], 'page', $page);
     }
 
     /**

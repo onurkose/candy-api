@@ -25,6 +25,9 @@ class SyncWithBasketListener
         if (! $event->basket->activeOrder) {
             return true;
         }
-        app('api')->orders()->syncWithBasket($event->basket->activeOrder, $event->basket);
+        app(OrderFactoryInterface::class)
+            ->basket($event->basket)
+            ->order($event->basket->activeOrder)
+            ->resolve();
     }
 }

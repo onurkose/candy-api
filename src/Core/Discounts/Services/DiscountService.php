@@ -159,6 +159,26 @@ class DiscountService extends BaseService
         return $this->model->orderBy('priority', 'desc')->with(['sets', 'sets.items'])->get();
     }
 
+    /**
+     * Returns model by a given hashed id.
+     * @param  string $id
+     * @throws  Illuminate\Database\Eloquent\ModelNotFoundException
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    public function getByHashedId($id, $relations = null)
+    {
+        $id = $this->model->decodeId($id);
+
+        // TODO: Probably need a better way to do this.
+        $query = $this->model->withoutGlobalScopes();
+
+        if ($relations) {
+            $query->with($relations);
+        }
+
+        return $query->findOrFail($id);
+    }
+
     public function getByCoupon($coupon)
     {
         return DiscountCriteriaItem::where('value', '=', $coupon)->first();

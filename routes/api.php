@@ -230,6 +230,7 @@
     /*
      * Settings
      */
+    $router->get('settings', 'Settings\SettingController@index');
     $router->get('settings/{handle}', 'Settings\SettingController@show');
 
     /*
