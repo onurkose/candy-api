@@ -2,12 +2,14 @@
 
 namespace GetCandy\Api\Core\Products\Models;
 
+use DB;
 use GetCandy\Api\Core\Categories\Models\Category;
 use GetCandy\Api\Core\Collections\Models\Collection;
 use GetCandy\Api\Core\Discounts\Models\DiscountCriteriaModel;
 use GetCandy\Api\Core\Http\Transformers\Fractal\Products\ProductTransformer;
 use GetCandy\Api\Core\Layouts\Models\Layout;
 use GetCandy\Api\Core\Pages\Models\Page;
+use GetCandy\Api\Core\RecycleBin\Traits\Recyclable;
 use GetCandy\Api\Core\Scaffold\BaseModel;
 use GetCandy\Api\Core\Scopes\ChannelScope;
 use GetCandy\Api\Core\Scopes\CustomerGroupScope;
@@ -18,9 +20,9 @@ use GetCandy\Api\Core\Traits\HasCustomerGroups;
 use GetCandy\Api\Core\Traits\HasRoutes;
 use GetCandy\Api\Core\Traits\HasShippingExclusions;
 use GetCandy\Api\Core\Traits\Indexable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Mpociot\Versionable\VersionableTrait;
 use NeonDigital\Drafting\Draftable;
+use GetCandy\Api\Http\Resources\Products\ProductResource;
 
 class Product extends BaseModel
 {
@@ -29,11 +31,11 @@ class Product extends BaseModel
         HasAttributes,
         HasChannels,
         HasRoutes,
-        SoftDeletes,
         Indexable,
         HasShippingExclusions,
         VersionableTrait,
-        Draftable;
+        Draftable,
+        Recyclable;
 
     protected $settings = 'products';
 
@@ -59,6 +61,16 @@ class Product extends BaseModel
 
     protected $dates = ['deleted_at'];
 
+    /**
+     * The resource to use for API responses
+     *
+     * @var string
+     */
+    public $resource = ProductResource::class;
+
+    /**
+     * @deprecated 0.9.0
+     */
     public $transformer = ProductTransformer::class;
 
     /**
@@ -113,6 +125,10 @@ class Product extends BaseModel
     {
         $options = [];
         $parentPosition = 1;
+
+        if (is_string($value)) {
+            $value = json_decode($value, true);
+        }
 
         foreach ($value as $option) {
             $label = reset($option['label']);
@@ -201,5 +217,32 @@ class Product extends BaseModel
     public function recommendations()
     {
         return $this->hasMany(ProductRecommendation::class, 'related_product_id');
+    }
+
+    public function getRecycleName()
+    {
+        return $this->name;
+    }
+
+    public function getRecycleThumbnail()
+    {
+        return $this->primaryAsset->transforms->first()->url ?? null;
+    }
+
+    /**
+     * Delete the product
+     *
+     * @return void
+     */
+    public function delete()
+    {
+        $this->channels()->detach();
+        $this->collections()->detach();
+        $this->assets()->delete();
+        $this->variants()->delete();
+        $this->categories()->detach();
+        $this->recommendations()->delete();
+
+        parent::delete();
     }
 }

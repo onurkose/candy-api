@@ -281,3 +281,21 @@
         'as' => 'account.password.reset',
         'uses' => 'Auth\AccountController@resetPassword',
     ]);
+
+    /**
+     * Recycle bin
+     */
+    $router->get('recycle-bin', [
+        'as' => 'recycle-bin.index',
+        'uses' => 'RecycleBin\RecycleBinController@index'
+    ]);
+
+    $router->get('recycle-bin/{id}', [
+        'as' => 'recycle-bin.show',
+        'uses' => 'RecycleBin\RecycleBinController@show'
+    ]);
+
+    $router->delete('recycle-bin/{id}', [
+        'as' => 'recycle-bin.delete',
+        'uses' => 'RecycleBin\RecycleBinController@destroy'
+    ]);
