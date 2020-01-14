@@ -19,6 +19,8 @@ use GetCandy\Api\Core\Traits\HasRoutes;
 use GetCandy\Api\Core\Traits\HasShippingExclusions;
 use GetCandy\Api\Core\Traits\Indexable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Mpociot\Versionable\VersionableTrait;
+use NeonDigital\Drafting\Draftable;
 
 class Product extends BaseModel
 {
@@ -29,9 +31,13 @@ class Product extends BaseModel
         HasRoutes,
         SoftDeletes,
         Indexable,
-        HasShippingExclusions;
+        HasShippingExclusions,
+        VersionableTrait,
+        Draftable;
 
     protected $settings = 'products';
+
+    protected $keepOldVersions = 10;
 
     /**
      * The products minimum price.

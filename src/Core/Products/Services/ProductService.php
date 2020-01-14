@@ -37,12 +37,30 @@ class ProductService extends BaseService
      * @throws  Illuminate\Database\Eloquent\ModelNotFoundException
      * @return Product
      */
-    public function getByHashedId($id)
+    public function getByHashedId($id, $withDrafted = false)
     {
         $id = $this->model->decodeId($id);
-        $product = $this->model->findOrFail($id);
+        $product = $this->model;
 
-        return $this->factory->init($product)->get();
+        \Log::debug('Here');
+        if ($withDrafted) {
+            $product = $product->withDrafted();
+        }
+
+        return $this->factory->init($product->findOrFail($id))->get();
+    }
+
+    public function findById($id, array $includes = [], $draft = false)
+    {
+        $query = Product::with(array_merge($includes, ['draft']));
+
+        if ($draft) {
+            $query->withDrafted();
+        }
+
+        $product = $query->find($id);
+
+        return $product;
     }
 
     /**
@@ -58,7 +76,7 @@ class ProductService extends BaseService
      */
     public function update($hashedId, array $data)
     {
-        $product = $this->getByHashedId($hashedId);
+        $product = $this->getByHashedId($hashedId, true);
 
         if (! $product) {
             abort(404);
@@ -73,9 +91,9 @@ class ProductService extends BaseService
             $product->save();
         }
 
-        event(new AttributableSavedEvent($product));
+        // event(new AttributableSavedEvent($product));
 
-        event(new IndexableSavedEvent($product));
+        // event(new IndexableSavedEvent($product));
 
         return $product;
     }
@@ -228,12 +246,12 @@ class ProductService extends BaseService
     }
 
     /**
-     * @param $hashedId
+     * @param $id
      * @return mixed
      */
-    public function delete($hashedId)
+    public function delete($id)
     {
-        return $this->getByHashedId($hashedId)->delete();
+        return Product::withDrafted()->find($id)->delete();
     }
 
     /**
@@ -272,7 +290,7 @@ class ProductService extends BaseService
             'attributes',
             'family',
             'family.attributes',
-        ])->find($id);
+        ])->withDrafted()->find($id);
 
         foreach ($product->family->attributes as $attribute) {
             $attributes[$attribute->handle] = $attribute;

@@ -19,7 +19,10 @@ class ProductResource extends AbstractResource
     {
         return [
             'id' => $this->encoded_id,
+            'drafted_at' => $this->drafted_at,
             'option_data' => $this->parseOptionData($this->option_data),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 
@@ -34,6 +37,8 @@ class ProductResource extends AbstractResource
     {
         return [
             'attributes' => new AttributeCollection($this->whenLoaded('attributes')),
+            'draft' => new self($this->whenLoaded('draft')),
+            'published_parent' => new self($this->whenLoaded('publishedParent')),
             'assets' => new AssetCollection($this->whenLoaded('assets')),
             'family' => $this->include('family', ProductFamilyResource::class),
             'routes' => new RouteCollection($this->whenLoaded('routes')),

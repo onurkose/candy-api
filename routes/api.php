@@ -202,6 +202,7 @@
     /*
      * Resource routes
      */
+    $router->post('products/{id}/drafts', 'Products\ProductController@createDraft');
     $router->resource('products', 'Products\ProductController', [
         'except' => ['edit', 'create', 'show'],
     ]);

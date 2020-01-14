@@ -6,6 +6,7 @@ use GetCandy\Api\Core\Baskets\Interfaces\BasketCriteriaInterface;
 use GetCandy\Api\Core\Products\Factories\ProductDuplicateFactory;
 use GetCandy\Api\Core\Products\Models\Product;
 use GetCandy\Api\Core\Products\ProductCriteria;
+use GetCandy\Api\Core\Products\Services\ProductService;
 use GetCandy\Api\Http\Controllers\BaseController;
 use GetCandy\Api\Http\Requests\Products\CreateRequest;
 use GetCandy\Api\Http\Requests\Products\DeleteRequest;
@@ -17,6 +18,7 @@ use GetCandy\Api\Http\Resources\Products\ProductResource;
 use GetCandy\Api\Http\Transformers\Fractal\Products\ProductTransformer;
 use GetCandy\Exceptions\InvalidLanguageException;
 use GetCandy\Exceptions\MinimumRecordRequiredException;
+use Hashids;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -24,6 +26,18 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ProductController extends BaseController
 {
+    /**
+     * The product service
+     *
+     * @var ProductService
+     */
+    protected $service;
+
+    public function __construct(ProductService $service)
+    {
+        $this->service = $service;
+    }
+
     /**
      * Handles the request to show all products.
      * @param  Request $request
@@ -45,16 +59,20 @@ class ProductController extends BaseController
      * @param  string $id
      * @return array|\Illuminate\Http\Response
      */
-    public function show($id, Request $request, ProductCriteria $criteria)
+    public function show($id, Request $request)
     {
-        $product = $criteria
-            ->include($request->includes)
-            ->id($id)
-            ->first();
-
-        if (! $product) {
-            $product = $criteria->blank('id')->sku($id)->first();
+        $id = Hashids::connection('product')->decode($id);
+        if (empty($id[0])) {
+            return $this->errorNotFound();
         }
+
+        $includes = $request->includes ?: [];
+
+        if ($includes && is_string($includes)) {
+            $includes = explode(',', $request->includes);
+        }
+
+        $product = $this->service->findById($id[0], $includes, $request->draft);
 
         if (! $product) {
             return $this->errorNotFound();
@@ -62,6 +80,19 @@ class ProductController extends BaseController
         $resource = new ProductResource($product);
 
         return $resource->only($request->fields);
+    }
+
+    public function createDraft($id, Request $request)
+    {
+        $id = Hashids::connection('product')->decode($id);
+        if (empty($id[0])) {
+            return $this->errorNotFound();
+        }
+        $product = $this->service->findById($id[0], [], false);
+        $includes = $request->includes ? explode(',', $request->includes) : [];
+        $draft = \Drafting::with('products')->firstOrCreate($product);
+
+        return new ProductResource($draft->load($includes));
     }
 
     public function recommended(Request $request, ProductCriteria $productCriteria, BasketCriteriaInterface $baskets)
@@ -144,10 +175,14 @@ class ProductController extends BaseController
      * @param  DeleteRequest $request
      * @return Json
      */
-    public function destroy($product, DeleteRequest $request)
+    public function destroy($id, DeleteRequest $request)
     {
         try {
-            $result = app('api')->products()->delete($product);
+            $id = Hashids::connection('product')->decode($id);
+            if (empty($id[0])) {
+                return $this->errorNotFound();
+            }
+            $result = $this->service->delete($id[0], true);
         } catch (MinimumRecordRequiredException $e) {
             return $this->errorUnprocessable($e->getMessage());
         } catch (NotFoundHttpException $e) {
