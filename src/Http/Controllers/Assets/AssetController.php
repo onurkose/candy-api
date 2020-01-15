@@ -51,7 +51,7 @@ class AssetController extends BaseController
     public function store(UploadRequest $request)
     {
         try {
-            $parent = app('api')->{$request->parent}()->getByHashedId($request->parent_id);
+            $parent = app('api')->{$request->parent}()->getByHashedId($request->parent_id, true);
         } catch (InvalidServiceException $e) {
             return $this->errorWrongArgs($e->getMessage());
         }
