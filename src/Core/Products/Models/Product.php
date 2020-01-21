@@ -23,6 +23,7 @@ use GetCandy\Api\Core\Traits\Indexable;
 use Mpociot\Versionable\VersionableTrait;
 use NeonDigital\Drafting\Draftable;
 use GetCandy\Api\Http\Resources\Products\ProductResource;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Product extends BaseModel
 {
@@ -35,6 +36,7 @@ class Product extends BaseModel
         HasShippingExclusions,
         VersionableTrait,
         Draftable,
+        LogsActivity,
         Recyclable;
 
     protected $settings = 'products';
