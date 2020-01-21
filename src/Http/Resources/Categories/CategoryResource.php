@@ -21,6 +21,8 @@ class CategoryResource extends AbstractResource
             'sort' => $this->sort,
             'products_count' => $this->when(! is_null($this->products_count), $this->products_count),
             'children_count' => $this->when(! is_null($this->children_count), $this->children_count),
+            'left_pos' => $this->_lft,
+            'right_pos' => $this->_rgt,
         ];
     }
 
