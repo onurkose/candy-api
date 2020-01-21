@@ -189,6 +189,8 @@ class ProductVariantService extends BaseService
 
         if (! empty($data['pricing'])) {
             $this->setGroupPricing($variant, $data['pricing']);
+        } else if (isset($data['pricing']) && !count($data['pricing'])) {
+            $variant->customerPricing()->delete();
         }
 
         if (! empty($data['tiers'])) {
