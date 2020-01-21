@@ -53,10 +53,7 @@ class ProductDrafter implements DrafterInterface
             });
 
             $product->attributes->each(function ($model) use ($newProduct) {
-                $new = $model->replicate();
-                $new->attributable_id = $newProduct->id;
-                $new->attributable_type = get_class($newProduct);
-                $new->save();
+                $newProduct->attributes()->attach($model);
             });
 
             $newProduct->refresh();
