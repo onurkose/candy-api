@@ -34,7 +34,7 @@ class ProductDrafter implements DrafterInterface
             ]);
 
         // Activate any routes
-        $routeIds = $product->routes->pluck('id')->toArray();
+        $routeIds = $product->routes()->onlyDrafted()->get()->pluck('id')->toArray();
 
         DB::table('routes')
             ->whereIn('id', $routeIds)
