@@ -78,6 +78,10 @@ class ProductService extends BaseService
     {
         $product = $this->getByHashedId($hashedId, true);
 
+        if ($product->isDraft()) {
+            $product->disableVersioning();
+        }
+
         if (! $product) {
             abort(404);
         }
@@ -87,9 +91,10 @@ class ProductService extends BaseService
         if (! empty($data['family_id'])) {
             $family = app('api')->productFamilies()->getByHashedId($data['family_id']);
             $family->products()->save($product);
-        } else {
-            $product->save();
         }
+
+
+        $product->save();
 
         // event(new AttributableSavedEvent($product));
 
