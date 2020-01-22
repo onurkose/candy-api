@@ -251,7 +251,13 @@ class ProductService extends BaseService
      */
     public function delete($id)
     {
-        return Product::withDrafted()->find($id)->delete();
+        $product = Product::withDrafted()->find($id);
+
+        if ($product->isDraft()) {
+            return $product->forceDelete();
+        }
+
+        return $product->delete();
     }
 
     /**
