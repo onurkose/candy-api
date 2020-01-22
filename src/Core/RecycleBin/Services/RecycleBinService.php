@@ -4,6 +4,7 @@ namespace GetCandy\Api\Core\RecycleBin\Services;
 
 use GetCandy\Api\Core\RecycleBin\Interfaces\RecycleBinServiceInterface;
 use GetCandy\Api\Core\RecycleBin\Models\RecycleBin;
+use GetCandy\Api\Core\Products\Models\Product;
 
 class RecycleBinService implements RecycleBinServiceInterface
 {
@@ -14,7 +15,10 @@ class RecycleBinService implements RecycleBinServiceInterface
      */
     public function getItems($paginated = true, $perPage = 25, $terms = null)
     {
-        $query = RecycleBin::with('recyclable');
+        $query = RecycleBin::whereDoesntHaveMorph('recyclable', [
+            Product::class
+        ]);
+
         if (!$paginated) {
             return $query->get();
         }
