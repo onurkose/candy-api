@@ -2,17 +2,12 @@
 
 namespace GetCandy\Api\Core\Scopes;
 
-use GetCandy\Api\Core\GetCandy;
+use GetCandy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 
 abstract class AbstractScope implements Scope
 {
-    /**
-     * The Candy API instance.
-     */
-    protected $api;
-
     /**
      * The customer groups.
      *
@@ -44,7 +39,6 @@ abstract class AbstractScope implements Scope
     public function __construct()
     {
         $this->roles = app('api')->roles()->getHubAccessRoles();
-        $this->api = app()->getInstance()->make(GetCandy::class);
     }
 
     /**
@@ -58,7 +52,7 @@ abstract class AbstractScope implements Scope
         if (
             ! $this->getUser()
             || ! $this->canAccessHub()
-            || ($this->canAccessHub() && ! $this->api->isHubRequest())
+            || ($this->canAccessHub() && ! GetCandy::isHubRequest())
         ) {
             $callback();
         }

@@ -3,7 +3,7 @@
 namespace GetCandy\Api\Http\Middleware;
 
 use Closure;
-use GetCandy\Api\Core\GetCandy;
+use GetCandy;
 
 class DetectHubRequestMiddleware
 {
@@ -24,7 +24,7 @@ class DetectHubRequestMiddleware
     public function handle($request, Closure $next)
     {
         if ($request->headers->has('X-CANDY-HUB')) {
-            $this->api->setIsHubRequest(true);
+            GetCandy::setIsHubRequest(true);
         }
 
         return $next($request);
