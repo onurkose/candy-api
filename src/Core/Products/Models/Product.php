@@ -238,13 +238,14 @@ class Product extends BaseModel
      */
     public function delete()
     {
-        $this->channels()->detach();
-        $this->collections()->detach();
-        $this->assets()->delete();
-        $this->variants()->delete();
-        $this->categories()->detach();
-        $this->recommendations()->delete();
-
+        if ($this->isForceDeleting()) {
+            $this->channels()->detach();
+            $this->collections()->detach();
+            $this->assets()->forceDelete();
+            $this->variants()->forceDelete();
+            $this->categories()->detach();
+            $this->recommendations()->forceDelete();
+        }
         parent::delete();
     }
 }
