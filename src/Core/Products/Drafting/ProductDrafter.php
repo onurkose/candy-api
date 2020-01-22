@@ -14,6 +14,45 @@ class ProductDrafter implements DrafterInterface
         dd('Hello!');
     }
 
+    public function publish(Model $product)
+    {
+        // Publish this product and remove the parent.
+        $parent = $product->publishedParent;
+
+        // Move the activities onto the draft
+        $parent->activities->each(function ($a) use ($product) {
+            $a->update(['subject_id' => $product->id]);
+        });
+
+        // Activate any product variants
+        $variantIds = $product->variants->pluck('id')->toArray();
+
+        DB::table('product_variants')
+            ->whereIn('id', $variantIds)
+            ->update([
+                'drafted_at' => null
+            ]);
+
+        // Activate any routes
+        $routeIds = $product->routes->pluck('id')->toArray();
+
+        DB::table('routes')
+            ->whereIn('id', $routeIds)
+            ->update([
+                'drafted_at' => null
+            ]);
+
+        // Delete routes
+        $parent->routes()->delete();
+
+        $parent->delete();
+
+        $product->drafted_at = null;
+        $product->save();
+
+        return $product;
+    }
+
         /**
      * Duplicate a product.
      *
@@ -55,6 +94,9 @@ class ProductDrafter implements DrafterInterface
             $product->attributes->each(function ($model) use ($newProduct) {
                 $newProduct->attributes()->attach($model);
             });
+
+            // Copy any activity log bits
+
 
             $newProduct->refresh();
 

@@ -9,6 +9,7 @@ use GetCandy\Api\Http\Resources\Attributes\AttributeCollection;
 use GetCandy\Api\Http\Resources\Categories\CategoryCollection;
 use GetCandy\Api\Http\Resources\Channels\ChannelCollection;
 use GetCandy\Api\Http\Resources\Collections\CollectionCollection;
+use GetCandy\Api\Http\Resources\Versioning\VersionCollection;
 use GetCandy\Api\Http\Resources\Customers\CustomerGroupCollection;
 use GetCandy\Api\Http\Resources\Discounts\DiscountModelCollection;
 use GetCandy\Api\Http\Resources\Routes\RouteCollection;
@@ -50,6 +51,7 @@ class ProductResource extends AbstractResource
             'discounts' => new DiscountModelCollection($this->whenLoaded('discounts'), $this->only),
             'collections' => new CollectionCollection($this->whenLoaded('collections'), $this->only),
             'associations' => new ProductAssociationCollection($this->whenLoaded('associations'), $this->only),
+            'versions' => new VersionCollection($this->whenLoaded('versions'), $this->only),
             'customer_groups' => new CustomerGroupCollection($this->whenLoaded('customerGroups')),
         ];
     }

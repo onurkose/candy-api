@@ -95,6 +95,21 @@ class ProductController extends BaseController
         return new ProductResource($draft->load($includes));
     }
 
+    public function publishDraft($id, Request $request)
+    {
+        $id = Hashids::connection('product')->decode($id);
+        if (empty($id[0])) {
+            return $this->errorNotFound();
+        }
+        $product = $this->service->findById($id[0], [], true);
+
+        \Drafting::with('products')->publish($product);
+
+        $includes = $request->includes ? explode(',', $request->includes) : [];
+
+        return new ProductResource($product->load($includes));
+    }
+
     public function recommended(Request $request, ProductCriteria $productCriteria, BasketCriteriaInterface $baskets)
     {
         $request->validate([

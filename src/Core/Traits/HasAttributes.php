@@ -150,4 +150,11 @@ trait HasAttributes
 
         return $attributeData;
     }
+
+    // public function getAttributes()
+    // {
+    //     $attributes = $this->attributes;
+    //     $attributes['attribute_data'] = $this->getAttributeDataAttribute($attributes['attribute_data']);
+    //     return $attributes;
+    // }
 }
