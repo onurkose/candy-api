@@ -15,7 +15,7 @@ $router->get('/', function () {
     $currency = app()->make(GetCandy\Api\Core\Currencies\Interfaces\CurrencyConverterInterface::class);
 
     return response()->json([
-        'version' => GetCandy\Api\Core\GetCandy::version(),
+        'version' => GetCandy::version(),
         'locale' => app()->getLocale(),
         'channel' => new GetCandy\Api\Http\Resources\Channels\ChannelResource($channel->getChannel()),
         'currency' => new GetCandy\Api\Http\Resources\Currencies\CurrencyResource($currency->get()),
