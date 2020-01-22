@@ -118,9 +118,7 @@ class TagService extends BaseService
     {
         $ids = [];
         foreach ($tags as $tag) {
-            if (! $tag['id']) {
-                $tag = $this->getOrCreateTag($tag['name']);
-            }
+            $tag = $this->getOrCreateTag($tag);
             $ids[] = $this->model->decodeId($tag['id']) ?: $tag['id'];
         }
 
