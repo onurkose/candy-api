@@ -107,9 +107,11 @@ class ProductDrafter implements DrafterInterface
                 $newProduct->attributes()->attach($model);
             });
 
-            // Copy any activity log bits
-
-
+            $product->associations->each(function ($model) use ($newProduct) {
+                $assoc = $model->replicate();
+                $assoc->product_id = $newProduct->id;
+                $assoc->save();
+            });
             $newProduct->refresh();
 
             $this->processAssets($product, $newProduct);
