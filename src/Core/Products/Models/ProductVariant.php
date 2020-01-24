@@ -80,7 +80,7 @@ class ProductVariant extends BaseModel
     public function getOptionsAttribute($val)
     {
         $values = [];
-        $option_data = $this->product->option_data;
+        $option_data = $this->product ? $this->product->option_data : [];
 
         foreach (json_decode($val, true) as $option => $value) {
             if (! empty($data = $option_data[$option])) {
