@@ -144,7 +144,7 @@ class ProductDrafter implements DrafterInterface
             // Move the file to it's new location
             $newAsset->assetable_id = $newProduct->id;
 
-            $newFilename = uniqid().'_'.$newAsset->filename;
+            $newFilename = uniqid().'.'.$newAsset->extension;
 
             try {
                 Storage::disk($newAsset->source->disk)->copy(
