@@ -30,6 +30,7 @@ class ProductVariantVersioner extends AbstractVersioner implements VersionerInte
         unset($data['id']);
         $variant = new ProductVariant;
         $variant->forceFill($data);
+        $variant->asset_id = null;
 
         if ($parent) {
             $variant->product_id = $parent->id;
