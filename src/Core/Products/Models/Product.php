@@ -229,22 +229,4 @@ class Product extends BaseModel
     {
         return $this->primaryAsset->transforms->first()->url ?? null;
     }
-
-    /**
-     * Delete the product
-     *
-     * @return void
-     */
-    public function delete()
-    {
-        if ($this->isForceDeleting()) {
-            $this->channels()->detach();
-            $this->collections()->detach();
-            $this->assets()->forceDelete();
-            $this->variants()->forceDelete();
-            $this->categories()->detach();
-            $this->recommendations()->forceDelete();
-        }
-        parent::delete();
-    }
 }

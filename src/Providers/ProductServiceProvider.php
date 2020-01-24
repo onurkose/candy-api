@@ -2,15 +2,17 @@
 
 namespace GetCandy\Api\Providers;
 
+use Drafting;
+use GetCandy\Api\Core\Products\Drafting\ProductDrafter;
 use GetCandy\Api\Core\Products\Factories\ProductFactory;
 use GetCandy\Api\Core\Products\Factories\ProductVariantFactory;
 use GetCandy\Api\Core\Products\Interfaces\ProductInterface;
 use GetCandy\Api\Core\Products\Interfaces\ProductVariantInterface;
-use Illuminate\Support\ServiceProvider;
-use GetCandy\Api\Core\Products\Drafting\ProductDrafter;
-use GetCandy\Api\Core\Products\Versioning\ProductVersioner;
+use GetCandy\Api\Core\Products\Models\Product;
+use GetCandy\Api\Core\Products\Observers\ProductObserver;
 use GetCandy\Api\Core\Products\Versioning\ProductVariantVersioner;
-use Drafting;
+use GetCandy\Api\Core\Products\Versioning\ProductVersioner;
+use Illuminate\Support\ServiceProvider;
 use Versioning;
 
 class ProductServiceProvider extends ServiceProvider
@@ -27,6 +29,8 @@ class ProductServiceProvider extends ServiceProvider
         Versioning::extend('product_variants', function ($app) {
             return $app->make(ProductVariantVersioner::class);
         });
+
+        Product::observe(ProductObserver::class);
     }
 
     public function register()
