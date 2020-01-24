@@ -59,12 +59,10 @@ class ProductController extends BaseController
      * @param  string $id
      * @return array|\Illuminate\Http\Response
      */
-    public function show($id, Request $request)
+    public function show($idOrSku, Request $request)
     {
-        $id = Hashids::connection('product')->decode($id);
-        if (empty($id[0])) {
-            return $this->errorNotFound();
-        }
+        $id = Hashids::connection('product')->decode($idOrSku);
+
 
         $includes = $request->includes ?: [];
 
@@ -72,9 +70,14 @@ class ProductController extends BaseController
             $includes = explode(',', $request->includes);
         }
 
-        $product = $this->service->findById($id[0], $includes, $request->draft);
+        if (empty($id[0])) {
+            $product = $this->service->findBySku($idOrSku, $includes, $request->draft);
+        } else {
+            $product = $this->service->findById($id[0], $includes, $request->draft);
+        }
 
         if (! $product) {
+
             return $this->errorNotFound();
         }
         $resource = new ProductResource($product);

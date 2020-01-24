@@ -62,6 +62,20 @@ class ProductService extends BaseService
         return $product;
     }
 
+    public function findBySku($sku, array $includes = [], $draft = false)
+    {
+        $query = Product::with(array_merge($includes, ['draft']))
+            ->whereHas('variants', function ($q) use($sku) {
+                $q->whereSku($sku);
+            });
+
+        if ($draft) {
+            $query->withDrafted()->withoutGlobalScopes();
+        }
+
+        return $query->first();
+    }
+
     /**
      * Updates a resource from the given data.
      *
