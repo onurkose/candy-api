@@ -18,6 +18,7 @@ class Asset extends BaseModel
      * @var array
      */
     protected $fillable = [
+        'asset_source_id',
         'title',
         'caption',
         'size',

@@ -4,6 +4,7 @@ namespace GetCandy\Api\Core\Products\Drafting;
 
 use DB;
 use Storage;
+use Versioning;
 use NeonDigital\Drafting\Interfaces\DrafterInterface;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,6 +19,17 @@ class ProductDrafter implements DrafterInterface
     {
         // Publish this product and remove the parent.
         $parent = $product->publishedParent;
+
+        // Get any current versions and assign them to this new product.
+
+        foreach ($parent->versions as $version) {
+            $version->update([
+                'versionable_id' => $product->id
+            ]);
+        }
+
+        // Create a version of the parent before we publish these changes
+        Versioning::with('products')->create($parent, null, $product->id);
 
         // Move the activities onto the draft
         $parent->activities->each(function ($a) use ($product) {
@@ -104,6 +116,7 @@ class ProductDrafter implements DrafterInterface
             $this->processCategories($product, $newProduct);
             $this->processChannels($product, $newProduct);
             $this->processCustomerGroups($product, $newProduct);
+            $newProduct->refresh();
 
             return $newProduct->load([
                 'variants',
@@ -120,7 +133,7 @@ class ProductDrafter implements DrafterInterface
      * @param Product $newProduct
      * @return void
      */
-    protected function processAssets($oldProduct, $newProduct)
+    protected function processAssets($oldProduct, &$newProduct)
     {
         $currentAssets = $oldProduct->assets;
         $assets = collect();
@@ -173,7 +186,7 @@ class ProductDrafter implements DrafterInterface
      * @param Product $newProduct
      * @return void
      */
-    protected function processCategories($oldProduct, $newProduct)
+    protected function processCategories($oldProduct, &$newProduct)
     {
         $currentCategories = $oldProduct->categories;
         foreach ($currentCategories as $category) {
@@ -187,7 +200,7 @@ class ProductDrafter implements DrafterInterface
      * @param Product $newProduct
      * @return void
      */
-    protected function processCustomerGroups($oldProduct, $newProduct)
+    protected function processCustomerGroups($oldProduct, &$newProduct)
     {
         // Need to associate all the channels the current product has
         // but make sure they are not active to start with.
@@ -196,11 +209,13 @@ class ProductDrafter implements DrafterInterface
         $newGroups = collect();
 
         foreach ($groups as $group) {
+            // \DB::table()
             $newGroups->put($group->id, [
                 'visible' => $group->pivot->visible,
                 'purchasable' => $group->pivot->purchasable,
             ]);
         }
+
         $newProduct->customerGroups()->sync($newGroups->toArray());
     }
 
@@ -210,7 +225,7 @@ class ProductDrafter implements DrafterInterface
      * @param Product $newProduct
      * @return void
      */
-    protected function processChannels($oldProduct, $newProduct)
+    protected function processChannels($oldProduct, &$newProduct)
     {
         // Need to associate all the channels the current product has
         // but make sure they are not active to start with.

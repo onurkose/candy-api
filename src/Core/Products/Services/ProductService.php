@@ -42,7 +42,6 @@ class ProductService extends BaseService
         $id = $this->model->decodeId($id);
         $product = $this->model;
 
-        \Log::debug('Here');
         if ($withDrafted) {
             $product = $product->withDrafted();
         }
@@ -55,7 +54,7 @@ class ProductService extends BaseService
         $query = Product::with(array_merge($includes, ['draft']));
 
         if ($draft) {
-            $query->withDrafted();
+            $query->withDrafted()->withoutGlobalScopes();
         }
 
         $product = $query->find($id);
@@ -77,10 +76,6 @@ class ProductService extends BaseService
     public function update($hashedId, array $data)
     {
         $product = $this->getByHashedId($hashedId, true);
-
-        if ($product->isDraft()) {
-            $product->disableVersioning();
-        }
 
         if (! $product) {
             abort(404);

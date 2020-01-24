@@ -8,7 +8,10 @@ use GetCandy\Api\Core\Products\Interfaces\ProductInterface;
 use GetCandy\Api\Core\Products\Interfaces\ProductVariantInterface;
 use Illuminate\Support\ServiceProvider;
 use GetCandy\Api\Core\Products\Drafting\ProductDrafter;
+use GetCandy\Api\Core\Products\Versioning\ProductVersioner;
+use GetCandy\Api\Core\Products\Versioning\ProductVariantVersioner;
 use Drafting;
+use Versioning;
 
 class ProductServiceProvider extends ServiceProvider
 {
@@ -16,6 +19,13 @@ class ProductServiceProvider extends ServiceProvider
     {
         Drafting::extend('products', function ($app) {
             return $app->make(ProductDrafter::class);
+        });
+
+        Versioning::extend('products', function ($app) {
+            return $app->make(ProductVersioner::class);
+        });
+        Versioning::extend('product_variants', function ($app) {
+            return $app->make(ProductVariantVersioner::class);
         });
     }
 

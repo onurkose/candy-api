@@ -300,3 +300,11 @@
         'as' => 'recycle-bin.delete',
         'uses' => 'RecycleBin\RecycleBinController@destroy'
     ]);
+
+    /**
+     * Versioning
+     */
+    $router->post('versions/{id}/restore', [
+        'as' => 'versions.restore',
+        'uses' => 'Versioning\VersionController@restore',
+    ]);

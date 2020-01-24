@@ -24,8 +24,8 @@
         "vimeo/laravel": "5.3.*",
         "doctrine/dbal": "2.9.2",
         "paypal/rest-api-sdk-php": "*",
-        "mpociot/versionable": "~3.0",
-        "neondigital/laravel-drafting": "dev-master"
+        "neondigital/laravel-drafting": "dev-master",
+        "neondigital/laravel-versioning": "dev-master"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

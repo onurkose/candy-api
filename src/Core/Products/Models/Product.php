@@ -2,7 +2,6 @@
 
 namespace GetCandy\Api\Core\Products\Models;
 
-use DB;
 use GetCandy\Api\Core\Categories\Models\Category;
 use GetCandy\Api\Core\Collections\Models\Collection;
 use GetCandy\Api\Core\Discounts\Models\DiscountCriteriaModel;
@@ -20,9 +19,9 @@ use GetCandy\Api\Core\Traits\HasCustomerGroups;
 use GetCandy\Api\Core\Traits\HasRoutes;
 use GetCandy\Api\Core\Traits\HasShippingExclusions;
 use GetCandy\Api\Core\Traits\Indexable;
-use Mpociot\Versionable\VersionableTrait;
-use NeonDigital\Drafting\Draftable;
 use GetCandy\Api\Http\Resources\Products\ProductResource;
+use NeonDigital\Drafting\Draftable;
+use NeonDigital\Versioning\Versionable;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class Product extends BaseModel
@@ -34,9 +33,9 @@ class Product extends BaseModel
         HasRoutes,
         Indexable,
         HasShippingExclusions,
-        VersionableTrait,
         Draftable,
         LogsActivity,
+        Versionable,
         Recyclable;
 
     protected $settings = 'products';
