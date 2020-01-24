@@ -227,6 +227,6 @@ class Product extends BaseModel
 
     public function getRecycleThumbnail()
     {
-        return $this->primaryAsset->transforms->first()->url ?? null;
+        return $this->primaryAsset ? $this->primaryAsset->transforms->first()->url ?? null : null;
     }
 }
