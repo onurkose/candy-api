@@ -3,10 +3,11 @@
 namespace GetCandy\Api\Core\Products\Drafting;
 
 use DB;
+use GetCandy\Api\Core\Products\Models\ProductAssociation;
+use Illuminate\Database\Eloquent\Model;
+use NeonDigital\Drafting\Interfaces\DrafterInterface;
 use Storage;
 use Versioning;
-use NeonDigital\Drafting\Interfaces\DrafterInterface;
-use Illuminate\Database\Eloquent\Model;
 
 class ProductDrafter implements DrafterInterface
 {
