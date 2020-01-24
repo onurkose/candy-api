@@ -57,7 +57,7 @@ class ProductDrafter implements DrafterInterface
         // Delete routes
         $parent->routes()->delete();
 
-        $parent->delete();
+        $parent->forceDelete();
 
         $product->drafted_at = null;
         $product->save();
