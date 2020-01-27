@@ -23,15 +23,13 @@ class AttributeController extends BaseController
     public function index(Request $request)
     {
         // $attributes = app('api')->attributes()->getPaginatedData($request->per_page);
-
         $attributes = new Attribute;
 
         if ($request->handle) {
             $attributes = $attributes->handle($request->handle);
         }
 
-        return new AttributeCollection($attributes->with($request->includes)->paginate($request->per_page));
-        return $this->respondWithCollection($attributes, new AttributeTransformer);
+        return new AttributeCollection($attributes->with($request->includes ?? [])->paginate($request->per_page));
     }
 
     /**

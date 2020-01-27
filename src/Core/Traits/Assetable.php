@@ -7,6 +7,8 @@ use GetCandy\Api\Core\Assets\Models\Assetable as AssetableModel;
 
 trait Assetable
 {
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
     public function assets()
     {
         return $this->belongsToMany(Asset::class, 'assetables', 'assetable_id')
@@ -21,8 +23,10 @@ trait Assetable
 
     public function primaryAsset()
     {
-        return $this->assets()
-            ->wherePrimary(true)
-            ->with('transforms');
+        return $this->hasOneDeep(Asset::class, ['assetables'], ['assetable_id'])
+        ->whereAssetableType(self::class)
+        ->withPivot('assetables', ['primary', 'assetable_type'])
+        ->wherePrimary(true);
+
     }
 }

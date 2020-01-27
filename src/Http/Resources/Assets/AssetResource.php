@@ -10,7 +10,11 @@ class AssetResource extends AbstractResource
     public function payload()
     {
         $pivot = $this->resource->pivot;
+        $assetable = $this->resource->assetables;
 
+        if ($assetable) {
+            $pivot = $assetable;
+        }
         $data = [
             'id' => $this->encodedId(),
             'title' => $this->title,

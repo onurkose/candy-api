@@ -13,7 +13,7 @@ class RecycleBinService implements RecycleBinServiceInterface
      *
      * @return void
      */
-    public function getItems($paginated = true, $perPage = 25, $terms = null)
+    public function getItems($paginated = true, $perPage = 25, $terms = null, $includes = [])
     {
         $query = RecycleBin::whereDoesntHaveMorph('recyclable', [
             Product::class
@@ -22,12 +22,13 @@ class RecycleBinService implements RecycleBinServiceInterface
         if (!$paginated) {
             return $query->get();
         }
+
         return $query->paginate($perPage);
     }
 
-    public function findById($id)
+    public function findById($id, $includes = [])
     {
-        return RecycleBin::findOrFail($id);
+        return RecycleBin::with($includes)->findOrFail($id);
     }
 
     public function forceDelete($id)
