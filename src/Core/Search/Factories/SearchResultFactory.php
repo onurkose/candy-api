@@ -249,7 +249,6 @@ class SearchResultFactory implements SearchResultInterface
         $resource->setMeta(
             $this->getMeta()
         );
-
         return $this->fractal->createData($resource)->toArray();
     }
 

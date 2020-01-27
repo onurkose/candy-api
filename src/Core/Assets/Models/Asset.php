@@ -30,9 +30,7 @@ class Asset extends BaseModel
         'location',
         'height',
         'kind',
-        'position',
         'external',
-        'primary',
     ];
 
     public function toArray()
@@ -41,6 +39,12 @@ class Asset extends BaseModel
             'url' => Storage::disk($this->source->disk)->url($this->location.'/'.$this->filename),
         ]);
     }
+
+    public function scopeImages($query)
+    {
+        return $query->where('kind', '!=', 'application');
+    }
+
 
     /**
      * Get the url attribute.
@@ -54,14 +58,6 @@ class Asset extends BaseModel
         }
 
         return Storage::disk($this->source->disk)->url($this->location.'/'.$this->filename);
-    }
-
-    /**
-     * Get all of the owning commentable models.
-     */
-    public function assetable()
-    {
-        return $this->morphTo();
     }
 
     /**
@@ -87,18 +83,11 @@ class Asset extends BaseModel
         });
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function products()
+    public function assetable()
     {
-        return $this->morphedByMany(Product::class, 'assetable');
+        return $this->belongsTo(Assetable::class);
     }
 
-    public function categories()
-    {
-        return $this->morphedByMany(Category::class, 'assetable');
-    }
 
     public function uploader()
     {

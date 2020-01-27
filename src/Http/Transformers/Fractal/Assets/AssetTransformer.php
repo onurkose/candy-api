@@ -21,7 +21,7 @@ class AssetTransformer extends BaseTransformer
      * @param  Attribute $product
      * @return array
      */
-    public function transform(Asset $asset)
+    public function transform($asset)
     {
         $data = [
             'id' => $asset->encodedId(),
@@ -38,7 +38,7 @@ class AssetTransformer extends BaseTransformer
             $data = array_merge($data, [
                 'sub_kind' => $asset->sub_kind,
                 'extension' => $asset->extension,
-                'original_filename' => $asset->original_filename,
+                'original_filename' =>$asset->original_filename,
                 'size' => $asset->size,
                 'width' => $asset->width,
                 'height' => $asset->height,
@@ -47,7 +47,6 @@ class AssetTransformer extends BaseTransformer
         } else {
             $data['url'] = $asset->location;
         }
-
         return $data;
     }
 

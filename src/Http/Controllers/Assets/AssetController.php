@@ -75,6 +75,17 @@ class AssetController extends BaseController
         return $this->respondWithItem($asset, new AssetTransformer);
     }
 
+    public function detach($assetId, $ownerId, Request $request)
+    {
+        try {
+            $result = app('api')->assets()->detach($assetId, $ownerId, $request->type);
+        } catch (NotFoundHttpException $e) {
+            return $this->errorNotFound();
+        }
+
+        return $this->respondWithNoContent();
+    }
+
     public function destroy($id)
     {
         try {

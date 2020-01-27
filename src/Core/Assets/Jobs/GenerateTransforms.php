@@ -17,17 +17,20 @@ class GenerateTransforms implements ShouldQueue
      */
     protected $assets;
 
+    protected $settings;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($assets)
+    public function __construct($assets, $settings = null)
     {
         if (! is_array($assets)) {
             $assets = [$assets];
         }
         $this->assets = collect($assets);
+        $this->settings = $settings;
     }
 
     /**
@@ -39,12 +42,9 @@ class GenerateTransforms implements ShouldQueue
     {
         foreach ($this->assets as $asset) {
 
-            // Do it this way to avoid global scope issues
-            $settings = (new $asset->assetable_type)->settings;
-
             app('api')->transforms()->transform(array_merge(
                 ['thumbnail'],
-                $settings['transforms']
+                $this->settings['transforms'] ?? []
             ), $asset);
         }
     }

@@ -28,15 +28,9 @@ class ProductObserver
     public function deleted(Product $product)
     {
         if ($product->isForceDeleting()) {
-            \Log::debug('Hit!');
             $product->channels()->detach();
             $product->collections()->detach();
-
-            foreach ($product->assets as $asset) {
-                $this->assets->delete($asset->encoded_id);
-            }
-
-            $product->assets()->forceDelete();
+            $product->assets()->detach();
             $product->variants()->forceDelete();
             $product->categories()->detach();
             $product->routes()->forceDelete();

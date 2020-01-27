@@ -32,6 +32,7 @@
 
     $router->put('assets', 'Assets\AssetController@updateAll');
     $router->post('assets/simple', 'Assets\AssetController@storeSimple');
+    $router->post('assets/{assetId}/detach/{ownerId}', 'Assets\AssetController@detach');
     $router->resource('assets', 'Assets\AssetController', [
         'except' => ['edit', 'create'],
     ]);

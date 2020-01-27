@@ -68,13 +68,10 @@ class ProductVersioner extends AbstractVersioner implements VersionerInterface
         foreach ($product->routes as $route) {
             $this->createFromObject($route, $version->id);
         }
-        // Customer prices
-        // foreach ($product->routes as $route) {
-        //     $this->createFromObject($route, $version->id);
-        // }
+
         // Assets
         foreach ($product->assets as $asset) {
-            $this->createFromObject($asset, $version->id);
+            Versioning::with('assets')->create($asset, $version->id);
         }
     }
 
@@ -136,26 +133,17 @@ class ProductVersioner extends AbstractVersioner implements VersionerInterface
                     $route->save();
                     break;
                 case Asset::class:
-                    $asset = new Asset;
-                    // Basically need to copy asset across
                     $data = $relation->model_data;
-                    unset($data['id']);
-                    $asset->forceFill($data);
-                    $asset->assetable_type = get_class($product);
-                    $asset->assetable_id = $product->id;
 
-                    $newFilename = uniqid().'_'.$asset->filename;
-
-                    try {
-                        \Storage::disk($asset->source->disk)->copy(
-                            "{$asset->location}/{$asset->filename}",
-                            "{$asset->location}/{$newFilename}"
-                        );
-                        $asset->filename = $newFilename;
-                        $asset->save();
-                    } catch (FileNotFoundException $e) {
-                        // If file isn't there, we can't put it back.
+                    if (!Asset::find($data['asset_id'])) {
+                        break;
                     }
+
+                    $product->assets()->attach($data['asset_id'], [
+                        'position' => $data['position'] ?? 1,
+                        'primary' => $data['primary'] ?? true,
+                    ]);
+
                     break;
                 default:
                     break;

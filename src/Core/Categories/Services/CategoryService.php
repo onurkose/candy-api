@@ -277,7 +277,6 @@ class CategoryService extends BaseService
             'routes',
             'products',
             'assets',
-            'assets',
             'primaryAsset.transforms',
             'primaryAsset.source',
             'primaryAsset',

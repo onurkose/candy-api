@@ -126,6 +126,25 @@ class AssetService extends BaseService
     }
 
     /**
+     * Detach an asset.
+     *
+     * @param string $assetId
+     *
+     * @return bool
+     */
+    public function detach($assetId, $ownerId, $ownerType)
+    {
+        $ownerId = (new $ownerType)->decodeId($ownerId);
+
+        $ownerModel = (new $ownerType)->withoutGlobalScopes()->find($ownerId);
+
+        $assetId = (new Asset)->decodeId($assetId);
+        $ownerModel->assets()->detach($assetId);
+
+        return true;
+    }
+
+    /**
      * Delete an asset.
      *
      * @param string $id

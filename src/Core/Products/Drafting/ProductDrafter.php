@@ -138,49 +138,15 @@ class ProductDrafter implements DrafterInterface
      */
     protected function processAssets($oldProduct, &$newProduct)
     {
-        $currentAssets = $oldProduct->assets;
-        $assets = collect();
-
-        $currentAssets->each(function ($a) use ($assets, $newProduct) {
-            $newAsset = $a->replicate();
-
-            // Move the file to it's new location
-            $newAsset->assetable_id = $newProduct->id;
-
-            $newFilename = uniqid().'.'.$newAsset->extension;
-
-            try {
-                Storage::disk($newAsset->source->disk)->copy(
-                    "{$newAsset->location}/{$newAsset->filename}",
-                    "{$newAsset->location}/{$newFilename}"
-                );
-                $newAsset->filename = $newFilename;
-            } catch (FileNotFoundException $e) {
-                $newAsset->save();
-
-                return;
-            }
-
-            $newAsset->save();
-
-            foreach ($a->transforms as $transform) {
-                $newTransform = $transform->replicate();
-                $newTransform->asset_id = $newAsset->id;
-                $newFilename = uniqid().'_'.$newTransform->filename;
-
-                try {
-                    Storage::disk($newAsset->source->disk)->copy(
-                        "{$newTransform->location}/{$newTransform->filename}",
-                        "{$newTransform->location}/{$newFilename}"
-                    );
-                } catch (FileNotFoundException $e) {
-                    continue;
-                }
-
-                $newTransform->filename = $newFilename;
-                $newTransform->save();
-            }
-        });
+        foreach ($oldProduct->assets as $asset) {
+            $newProduct->assets()->attach(
+                $asset->id,
+                [
+                    'primary' => $asset->pivot->primary,
+                    'assetable_type' => $asset->pivot->assetable_type,
+                ]
+            );
+        }
     }
 
     /**

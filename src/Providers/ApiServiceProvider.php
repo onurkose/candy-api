@@ -52,6 +52,7 @@ class ApiServiceProvider extends ServiceProvider
     {
         $providers = [
             ActivityLogServiceProvider::class,
+            AssetServiceProvider::class,
             ChannelServiceProvider::class,
             BasketServiceProvider::class,
             CurrencyServiceProvider::class,

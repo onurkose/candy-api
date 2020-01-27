@@ -38,9 +38,13 @@ class Image extends BaseUploadDriver implements AssetDriverContract
             //
         }
 
-        $asset->primary = ! $model->assets()->where('kind', '!=', 'application')->exists();
+        $asset->save();
 
-        $model->assets()->save($asset);
+        $model->assets()->attach($asset, [
+            'primary' => !$model->assets()->images()->exists(),
+            'assetable_type' => get_class($model),
+            'position' => $model->assets()->count() + 1
+        ]);
 
         if ($data['file'] instanceof SplFileInfo) {
             Storage::disk($source->disk)->put($asset->location.'/'.$asset->filename, $data['file']->getContents());
@@ -49,7 +53,7 @@ class Image extends BaseUploadDriver implements AssetDriverContract
         }
 
         if (! empty($image)) {
-            GenerateTransforms::dispatch($asset);
+            GenerateTransforms::dispatch($asset, $model->settings);
         }
 
         return $asset;
