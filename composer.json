@@ -25,7 +25,8 @@
         "doctrine/dbal": "2.9.2",
         "paypal/rest-api-sdk-php": "*",
         "neondigital/laravel-drafting": "dev-master",
-        "neondigital/laravel-versioning": "dev-master"
+        "neondigital/laravel-versioning": "dev-master",
+        "staudenmeir/eloquent-has-many-deep": "^1.7"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
