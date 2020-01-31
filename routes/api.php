@@ -172,7 +172,7 @@
      * Products
      */
     $router->prefix('products')->namespace('Products')->group(function ($router) {
-        $router->post('/{product}/urls', 'ProductController@createUrl');
+        $router->post('/{product}/urls', 'ProductRouteController@store');
         $router->post('/{product}/redirects', 'ProductRedirectController@store');
         $router->post('/{product}/attributes', 'ProductAttributeController@update');
         $router->post('/{product}/collections', 'ProductCollectionController@update');
