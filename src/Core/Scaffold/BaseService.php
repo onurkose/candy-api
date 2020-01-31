@@ -407,7 +407,7 @@ abstract class BaseService
      */
     public function createUrl($hashedId, array $data)
     {
-        $model = $this->getByHashedId($hashedId);
+        $model = $this->getByHashedId($hashedId, true);
 
         try {
             $existing = app('api')->routes()->getBySlug($data['slug']);
@@ -416,7 +416,7 @@ abstract class BaseService
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
         }
 
-        $model->routes()->create([
+        $route = $model->routes()->create([
             'locale' => $data['locale'],
             'slug' => $data['slug'],
             'description' => ! empty($data['description']) ? $data['description'] : null,
@@ -424,7 +424,7 @@ abstract class BaseService
             'default' => false,
         ]);
 
-        return $model;
+        return $route;
     }
 
     /**

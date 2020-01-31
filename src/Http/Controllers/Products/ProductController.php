@@ -45,10 +45,17 @@ class ProductController extends BaseController
      */
     public function index(Request $request, ProductCriteria $criteria)
     {
+        $paginate = true;
+
+        if ($request->exists('paginated') && !$request->paginated) {
+            $paginate = false;
+        }
+
         $products = $criteria
             ->include($request->includes)
             ->ids($request->ids)
             ->limit($request->get('limit', 50))
+            ->paginated($paginate)
             ->get();
 
         return new ProductCollection($products, $this->parseIncludedFields($request));
@@ -92,10 +99,9 @@ class ProductController extends BaseController
             return $this->errorNotFound();
         }
         $product = $this->service->findById($id[0], [], false);
-        $includes = $request->includes ? explode(',', $request->includes) : [];
         $draft = \Drafting::with('products')->firstOrCreate($product);
 
-        return new ProductResource($draft->load($includes));
+        return new ProductResource($draft->load($request->includes));
     }
 
     public function publishDraft($id, Request $request)

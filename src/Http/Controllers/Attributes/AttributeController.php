@@ -29,7 +29,15 @@ class AttributeController extends BaseController
             $attributes = $attributes->handle($request->handle);
         }
 
-        return new AttributeCollection($attributes->with($request->includes ?? [])->paginate($request->per_page));
+        $paginate = true;
+
+        $attributes->with($request->includes ?? []);
+
+        if ($request->exists('paginated') && !$request->paginated) {
+            $paginate = false;
+        }
+
+        return new AttributeCollection($paginate ? $attributes->paginate($request->per_page) : $attributes->get());
     }
 
     /**
