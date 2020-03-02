@@ -31,7 +31,7 @@ class AttributeController extends BaseController
 
         $paginate = true;
 
-        $attributes->with($request->includes ?? []);
+        $attributes = $attributes->with(['group']);
 
         if ($request->exists('paginated') && !$request->paginated) {
             $paginate = false;
