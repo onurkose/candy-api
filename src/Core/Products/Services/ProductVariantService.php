@@ -25,7 +25,7 @@ class ProductVariantService extends BaseService
      */
     public function create($id, array $data)
     {
-        $product = app('api')->products()->getByHashedId($id);
+        $product = app('api')->products()->getByHashedId($id, true);
 
         // If we are adding a new set of variants, get rid.
 
