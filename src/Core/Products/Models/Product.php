@@ -10,8 +10,6 @@ use GetCandy\Api\Core\Layouts\Models\Layout;
 use GetCandy\Api\Core\Pages\Models\Page;
 use GetCandy\Api\Core\RecycleBin\Traits\Recyclable;
 use GetCandy\Api\Core\Scaffold\BaseModel;
-use GetCandy\Api\Core\Scopes\ChannelScope;
-use GetCandy\Api\Core\Scopes\CustomerGroupScope;
 use GetCandy\Api\Core\Traits\Assetable;
 use GetCandy\Api\Core\Traits\HasAttributes;
 use GetCandy\Api\Core\Traits\HasChannels;
@@ -88,19 +86,6 @@ class Product extends BaseModel
     protected $fillable = [
         'id', 'name', 'price', 'attribute_data', 'option_data', 'deleted_at',
     ];
-
-    /**
-     * The "booting" method of the model.
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::addGlobalScope(new CustomerGroupScope);
-        static::addGlobalScope(new ChannelScope);
-    }
 
     /**
      * Sets the option data attribute

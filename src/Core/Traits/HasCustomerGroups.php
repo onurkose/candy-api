@@ -7,9 +7,8 @@ use GetCandy\Api\Core\Scopes\CustomerGroupScope;
 
 trait HasCustomerGroups
 {
-    public static function boot()
+    public static function bootHasCustomerGroups()
     {
-        parent::boot();
         static::addGlobalScope(new CustomerGroupScope);
     }
 
