@@ -95,7 +95,9 @@ class ProductService extends BaseService
             abort(404);
         }
 
-        $product->attribute_data = $data['attribute_data'];
+        if (!empty($data['attribute_data'])) {
+            $product->attribute_data = $data['attribute_data'];
+        }
 
         if (! empty($data['family_id'])) {
             $family = app('api')->productFamilies()->getByHashedId($data['family_id']);

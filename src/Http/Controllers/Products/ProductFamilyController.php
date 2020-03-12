@@ -8,6 +8,7 @@ use GetCandy\Api\Http\Requests\ProductFamilies\CreateRequest;
 use GetCandy\Api\Http\Requests\ProductFamilies\DeleteRequest;
 use GetCandy\Api\Http\Requests\ProductFamilies\UpdateRequest;
 use GetCandy\Api\Http\Resources\Products\ProductFamilyResource;
+use GetCandy\Api\Http\Resources\Products\ProductFamilyCollection;
 use GetCandy\Api\Http\Transformers\Fractal\Products\ProductFamilyTransformer;
 use GetCandy\Exceptions\InvalidLanguageException;
 use GetCandy\Exceptions\MinimumRecordRequiredException;
@@ -24,9 +25,14 @@ class ProductFamilyController extends BaseController
      */
     public function index(Request $request)
     {
-        $paginator = app('api')->productFamilies()->getPaginatedData($request->per_page);
+        $paginator = app('api')->productFamilies()->getPaginatedData(
+            $request->per_page,
+            $request->page ?: 1,
+            $this->parseIncludes($request->includes),
+            $request->keywords
+        );
         // event(new ViewProductEvent(['hello' => 'there']));
-        return $this->respondWithCollection($paginator, new ProductFamilyTransformer);
+        return new ProductFamilyCollection($paginator);
     }
 
     /**
@@ -37,7 +43,7 @@ class ProductFamilyController extends BaseController
     public function show($id, Request $request, ProductFamilyCriteria $criteria)
     {
         try {
-            $family = $criteria->id($id)->includes($request->includes)->firstOrFail();
+            $family = $criteria->id($id)->includes($this->parseIncludes($request->includes))->firstOrFail();
         } catch (ModelNotFoundException $e) {
             return $this->errorNotFound();
         }

@@ -49,4 +49,55 @@ class ReportController extends BaseController
 
         return response()->json($report);
     }
+
+    public function orderCustomers(Request $request, ReportManagerContract $reports)
+    {
+        $this->validate($request, [
+            'from' => 'required|date',
+            'to' => 'required|date|after:from',
+        ]);
+
+        $report = $reports->with('orders')
+            ->mode($request->mode ?: 'monthly')
+            ->between(
+                Carbon::parse($request->from),
+                Carbon::parse($request->to)
+            )->customers();
+
+        return response()->json($report);
+    }
+
+    public function orderAverages(Request $request, ReportManagerContract $reports)
+    {
+        $this->validate($request, [
+            'from' => 'required|date',
+            'to' => 'required|date|after:from',
+        ]);
+
+        $report = $reports->with('orders')
+            ->mode($request->mode ?: 'monthly')
+            ->between(
+                Carbon::parse($request->from),
+                Carbon::parse($request->to)
+            )->averages();
+
+        return response()->json($report);
+    }
+
+    public function bestSellers(Request $request, ReportManagerContract $reports)
+    {
+        $this->validate($request, [
+            'from' => 'required|date',
+            'to' => 'required|date|after:from',
+        ]);
+
+        $report = $reports->with('orders')
+            ->mode($request->mode ?: 'monthly')
+            ->between(
+                Carbon::parse($request->from),
+                Carbon::parse($request->to)
+            )->bestSellers($request->limit);
+
+        return response()->json($report);
+    }
 }

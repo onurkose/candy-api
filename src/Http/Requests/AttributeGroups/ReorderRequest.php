@@ -15,10 +15,8 @@ class ReorderRequest extends FormRequest
 
     public function rules()
     {
-        $count = app('api')->attributeGroups()->count();
-
         return [
-            'groups' => 'required|size:'.$count,
+            'groups' => 'required|array',
         ];
     }
 

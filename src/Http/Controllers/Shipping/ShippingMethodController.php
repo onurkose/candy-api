@@ -6,6 +6,8 @@ use GetCandy\Api\Http\Controllers\BaseController;
 use GetCandy\Api\Http\Requests\Shipping\CreateRequest;
 use GetCandy\Api\Http\Requests\Shipping\UpdateRequest;
 use GetCandy\Api\Http\Transformers\Fractal\Shipping\ShippingMethodTransformer;
+use GetCandy\Api\Http\Resources\Shipping\ShippingMethodCollection;
+use GetCandy\Api\Http\Resources\Shipping\ShippingMethodResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -18,9 +20,8 @@ class ShippingMethodController extends BaseController
      */
     public function index(Request $request)
     {
-        $orders = app('api')->shippingMethods()->getPaginatedData($request->per_page, $request->current_page);
-
-        return $this->respondWithCollection($orders, new ShippingMethodTransformer);
+        $methods = app('api')->shippingMethods()->getPaginatedData($request->per_page, $request->current_page);
+        return new ShippingMethodCollection($methods);
     }
 
     /**
@@ -28,15 +29,15 @@ class ShippingMethodController extends BaseController
      * @param  string $id
      * @return Json
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
         try {
-            $shipping = app('api')->shippingMethods()->getByHashedId($id);
+            $shipping = app('api')->shippingMethods()->getByHashedId($id, explode(',', $request->includes));
         } catch (ModelNotFoundException $e) {
             return $this->errorNotFound();
         }
 
-        return $this->respondWithItem($shipping, new ShippingMethodTransformer);
+        return new ShippingMethodResource($shipping);
     }
 
     /**

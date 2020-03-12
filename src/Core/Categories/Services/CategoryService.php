@@ -111,6 +111,11 @@ class CategoryService extends BaseService
             $model->customerGroups()->sync($groupData);
         }
 
+        if ($data['layout_id']) {
+            $realLayoutId = app('api')->layouts()->getDecodedId($data['layout_id']);
+            $model->layout_id = $realLayoutId;
+        }
+
         if (! empty($data['channels']['data'])) {
             $model->channels()->sync(
                 $this->getChannelMapping($data['channels']['data'])
@@ -124,6 +129,32 @@ class CategoryService extends BaseService
         event(new CategoryStoredEvent($model));
 
         return $model;
+    }
+
+    public function updateChannels($id, array $data)
+    {
+        $category = $this->getByHashedId($id);
+        $category->channels()->sync(
+            $this->getChannelMapping($data['channels'])
+        );
+        return $category;
+    }
+
+    public function updateCustomerGroups($id, array $groups)
+    {
+        $category = $this->getByHashedId($id);
+        $groupData = [];
+        foreach ($groups as $group) {
+            $groupModel = app('api')->customerGroups->getByHashedId($group['id']);
+            $groupData[$groupModel->id] = [
+                'visible' => $group['visible'],
+                'purchasable' => $group['purchasable'],
+            ];
+        }
+        $category->customerGroups()->sync($groupData);
+        $category->load('customerGroups');
+
+        return $category;
     }
 
     public function updateProducts($id, array $data)

@@ -21,6 +21,8 @@ class Attribute extends BaseModel
         'handle',
         'position',
         'variant',
+        'lookups',
+        'required',
         'searchable',
         'filterable',
         'type',
@@ -43,12 +45,14 @@ class Attribute extends BaseModel
      * Sets the name attribute to a json string.
      * @param array $value
      */
-    public function setLookupsAttribute(array $value)
+    public function setLookupsAttribute($value)
     {
-        if (is_array($value)) {
-            $this->attributes['lookups'] = json_encode($value);
-        } else {
-            $this->attributes['lookups'] = $value;
+        if ($value) {
+            if (is_array($value)) {
+                $this->attributes['lookups'] = json_encode($value);
+            } else {
+                $this->attributes['lookups'] = $value;
+            }
         }
     }
 

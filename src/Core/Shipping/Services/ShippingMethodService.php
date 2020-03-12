@@ -89,6 +89,35 @@ class ShippingMethodService extends BaseService
     }
 
     /**
+     * Gets paginated data for the record.
+     * @param  int $length How many results per page
+     * @param  int  $page   The page to start
+     * @return Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getPaginatedData($length = 50, $page = null, $relations = null)
+    {
+        $query = $this->model->orderBy('created_at', 'desc');
+
+        if ($relations) {
+            $query->with(['zones']);
+        }
+        return $query->paginate($length, ['*'], 'page', $page);
+    }
+
+    /**
+     * Returns model by a given hashed id.
+     * @param  string $id
+     * @throws  Illuminate\Database\Eloquent\ModelNotFoundException
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    public function getByHashedId($id, $includes = [])
+    {
+        $id = $this->model->decodeId($id);
+
+        return $this->model->with($includes)->findOrFail($id);
+    }
+
+    /**
      * Gets shipping methods for an order.
      *
      * @param string $orderId

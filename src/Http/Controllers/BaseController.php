@@ -26,4 +26,15 @@ class BaseController extends Controller
 
         return explode(',', $request->fields);
     }
+
+    protected function parseIncludes($includes = null)
+    {
+        $includes = $includes ?: [];
+
+        if ($includes && is_string($includes)) {
+            $includes = explode(',', $includes);
+        }
+
+        return $includes;
+    }
 }

@@ -58,7 +58,7 @@ class ProductController extends BaseController
             ->paginated($paginate)
             ->get();
 
-        return new ProductCollection($products, $this->parseIncludedFields($request));
+        return new ProductCollection($products);
     }
 
     /**

@@ -9,6 +9,7 @@ use GetCandy\Api\Http\Transformers\Fractal\Shipping\ShippingZoneTransformer;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use GetCandy\Api\Http\Resources\Shipping\ShippingZoneResource;
 
 class ShippingZoneController extends BaseController
 {
@@ -31,12 +32,12 @@ class ShippingZoneController extends BaseController
     public function show($id)
     {
         try {
-            $channel = app('api')->shippingZones()->getByHashedId($id);
+            $zone = app('api')->shippingZones()->getByHashedId($id);
         } catch (ModelNotFoundException $e) {
             return $this->errorNotFound();
         }
 
-        return $this->respondWithItem($channel, new ShippingZoneTransformer);
+        return new ShippingZoneResource($zone);
     }
 
     /**

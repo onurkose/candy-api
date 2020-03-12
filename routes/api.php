@@ -84,6 +84,8 @@
     $router->post('categories/reorder', 'Categories\CategoryController@reorder');
     $router->post('categories/{category}/products/attach', 'Products\ProductCategoryController@attach');
     $router->put('categories/{category}/products', 'Categories\CategoryController@putProducts');
+    $router->post('categories/{category}/channels', 'Categories\CategoryController@putChannels');
+    $router->post('categories/{category}/customer-groups', 'Categories\CategoryController@putCustomerGroups');
     $router->put('categories/{category}/layouts', 'Categories\LayoutController@store');
 
     $router->post('categories/{category}/routes', 'Categories\CategoryRouteController@store');
@@ -197,6 +199,9 @@
     $router->prefix('reports')->namespace('Reports')->group(function ($router) {
         $router->get('/sales', 'ReportController@sales');
         $router->get('/orders', 'ReportController@orders');
+        $router->get('/orders/customers', 'ReportController@orderCustomers');
+        $router->get('/orders/averages', 'ReportController@orderAverages');
+        $router->get('/products/best-sellers', 'ReportController@bestSellers');
         $router->get('/metrics/{subject}', 'ReportController@metrics');
     });
 

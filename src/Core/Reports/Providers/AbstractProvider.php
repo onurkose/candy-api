@@ -4,6 +4,7 @@ namespace GetCandy\Api\Core\Reports\Providers;
 
 use DateTime;
 use GetCandy\Api\Core\Orders\Models\Order;
+use GetCandy\Api\Core\Orders\Models\OrderLine;
 
 abstract class AbstractProvider
 {
@@ -76,5 +77,21 @@ abstract class AbstractProvider
                 $from ?: $this->from,
                 $to ?: $this->to,
             ]);
+    }
+
+    /**
+     * Gets order within the date range.
+     * @return \Illuminate\Support\Collection
+     */
+    protected function getOrderLineQuery(DateTime $from = null, DateTime $to = null)
+    {
+        return OrderLine::whereHas('order', function ($query) use ($from, $to) {
+            $query->withoutGlobalScope('not_expired')
+            ->whereNotNull('placed_at')
+            ->whereBetween('placed_at', [
+                $from ?: $this->from,
+                $to ?: $this->to,
+            ]);
+        });
     }
 }
