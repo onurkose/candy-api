@@ -19,7 +19,8 @@ class RemoveAttributeDataFromProductFamilyTable extends Migration
         $families = ProductFamily::all();
 
         foreach ($families as $family) {
-            $name = $family->attribute_data['name'][$channel->handle]['en'];
+            $data = json_decode($family->attribute_data, true);
+            $name = $data['name'][$channel->handle]['en'];
             // Doing it like this to stop any setters/getters...
             DB::table('product_families')->whereId($family->id)->update([
                 'name' => $name,
