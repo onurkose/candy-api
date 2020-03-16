@@ -79,6 +79,9 @@ class Orders extends AbstractProvider
 
     public function averages()
     {
+        $formats = $this->getDateFormat();
+        $displayFormat = $formats['display'];
+        $queryFormat = $formats['format'];
         $orders = $this->getOrderQuery()
             ->select(
                 DB::RAW('ROUND(AVG(order_total), 0) as order_total'),
@@ -86,14 +89,14 @@ class Orders extends AbstractProvider
                 DB::RAW('ROUND(AVG(discount_total), 0) as discount_total'),
                 DB::RAW('ROUND(AVG(sub_total), 0) as sub_total'),
                 DB::RAW('ROUND(AVG(tax_total), 0) as tax_total'),
-                DB::RAW("DATE_FORMAT(placed_at, '%M %Y') as month")
+                DB::RAW("DATE_FORMAT(placed_at, '{$displayFormat}') as date")
             )->groupBy(
-                DB::RAW("DATE_FORMAT(placed_at, '%Y-%m')")
+                DB::RAW("DATE_FORMAT(placed_at, '{$queryFormat}')")
             )->orderBy(DB::RAW("DATE_FORMAT(placed_at, '%Y-%m')"), 'desc')->get();
 
         return $orders->map(function ($order) {
             return [
-                'month' => $order->month,
+                'date' => $order->date,
                 'sub_total' => $order->sub_total,
                 'delivery_total' => $order->delivery_total,
                 'tax_total' => $order->tax_total,
