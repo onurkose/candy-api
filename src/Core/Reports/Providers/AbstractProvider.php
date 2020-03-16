@@ -64,6 +64,25 @@ abstract class AbstractProvider
         return $this;
     }
 
+    protected function getDateFormat()
+    {
+        $format = '%Y-%m';
+        $displayFormat = '%M %Y';
+
+        if ($this->mode == 'weekly') {
+            $format = '%Y-%v';
+            $displayFormat = 'Week Comm. %d/%m/%Y';
+        } elseif ($this->mode == 'daily') {
+            $format = '%Y-%m-%d';
+            $displayFormat = '%D %M %Y';
+        }
+
+        return [
+            'format' => $format,
+            'display' => $displayFormat
+        ];
+    }
+
     /**
      * Gets order within the date range.
      * @return \Illuminate\Support\Collection
