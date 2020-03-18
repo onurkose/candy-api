@@ -2,26 +2,66 @@
 
 namespace Tests;
 
-use Facades\GetCandy\Api\Core\Pricing\PriceCalculator;
-use Facades\GetCandy\Api\Core\Taxes\TaxCalculator;
-use GetCandy\Api\Core\Baskets\Factories\BasketFactory;
-use GetCandy\Api\Core\Baskets\Models\Basket;
-use GetCandy\Api\Core\Baskets\Models\BasketLine;
-use GetCandy\Api\Core\Channels\Interfaces\ChannelFactoryInterface;
-use GetCandy\Api\Core\Channels\Models\Channel;
-use GetCandy\Api\Core\Currencies\Facades\CurrencyConverter;
-use GetCandy\Api\Core\Facades\GetCandyFacade;
-use GetCandy\Api\Core\Products\Models\ProductVariant;
-use GetCandy\Api\Providers\ApiServiceProvider;
-use Illuminate\Encryption\Encrypter;
-use Laravel\Passport\PassportServiceProvider;
-use Spatie\Activitylog\ActivitylogServiceProvider;
-use Spatie\Permission\PermissionServiceProvider;
+use Closure;
 use Tests\Stubs\User;
+use Illuminate\Support\Fluent;
+use Illuminate\Encryption\Encrypter;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\SQLiteConnection;
 use Vinkla\Hashids\HashidsServiceProvider;
+use GetCandy\Api\Core\Baskets\Models\Basket;
+use GetCandy\Api\Core\Facades\GetCandyFacade;
+use Illuminate\Database\Schema\SQLiteBuilder;
+use Laravel\Passport\PassportServiceProvider;
+use GetCandy\Api\Core\Channels\Models\Channel;
+use GetCandy\Api\Providers\ApiServiceProvider;
+use GetCandy\Api\Core\Baskets\Models\BasketLine;
+use Spatie\Permission\PermissionServiceProvider;
+use NeonDigital\Drafting\DraftingServiceProvider;
+use Facades\GetCandy\Api\Core\Taxes\TaxCalculator;
+use Spatie\Activitylog\ActivitylogServiceProvider;
+use GetCandy\Api\Core\Products\Models\ProductVariant;
+use NeonDigital\Versioning\VersioningServiceProvider;
+use Facades\GetCandy\Api\Core\Pricing\PriceCalculator;
+use GetCandy\Api\Core\Baskets\Factories\BasketFactory;
+use GetCandy\Api\Core\Currencies\Facades\CurrencyConverter;
+use GetCandy\Api\Core\Channels\Interfaces\ChannelFactoryInterface;
 
 abstract class TestCase extends \Orchestra\Testbench\TestCase
 {
+    public function __construct(?string $name = null, array $data = [], string $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+        $this->hotfixSqlite();
+    }
+    /**
+     *
+     */
+    public function hotfixSqlite()
+    {
+        \Illuminate\Database\Connection::resolverFor('sqlite', function ($connection, $database, $prefix, $config) {
+            return new class($connection, $database, $prefix, $config) extends SQLiteConnection {
+                public function getSchemaBuilder()
+                {
+                    if ($this->schemaGrammar === null) {
+                        $this->useDefaultSchemaGrammar();
+                    }
+                    return new class($this) extends SQLiteBuilder {
+                        protected function createBlueprint($table, Closure $callback = null)
+                        {
+                            return new class($table, $callback) extends Blueprint {
+                                public function dropForeign($index)
+                                {
+                                    return new Fluent();
+                                }
+                            };
+                        }
+                    };
+                }
+            };
+        });
+    }
+
     protected $adminRoutes = [
         'import',
         'activity-log',
@@ -87,6 +127,8 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
             PermissionServiceProvider::class,
             ActivitylogServiceProvider::class,
             HashidsServiceProvider::class,
+            VersioningServiceProvider::class,
+            DraftingServiceProvider::class
         ];
     }
 
@@ -97,6 +139,8 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
             'TaxCalculator' => TaxCalculator::class,
             'PriceCalculator' => PriceCalculator::class,
             'GetCandy' => GetCandyFacade::class,
+            'Versioning' => \NeonDigital\Versioning\Facade::class,
+            'Drafting' => \NeonDigital\Drafting\Facade::class,
         ];
     }
 
