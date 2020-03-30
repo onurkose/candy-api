@@ -19,21 +19,21 @@ class AssetController extends BaseController
     {
         $file = $request->file('file');
 
-        $directory = 'public/uploads/'.Carbon::now()->format('d/m');
+        $directory = 'uploads/'.Carbon::now()->format('d/m');
 
-        $path = $file->store($directory);
+        $path = $file->store($directory, 'public');
+        $thumbnail = null;
 
         // You can't transform a PDF so...
         try {
-            $image = Image::make(Storage::get($path));
+            $image = Image::make(Storage::disk('public')->get($path));
             $type = pathinfo($path, PATHINFO_EXTENSION);
             $filename = basename($path, ".{$type}");
-            $image->resize(500, null, function ($constraint) {
+            $image->resize(null, 300, function ($constraint) {
                 $constraint->aspectRatio();
             });
-            $image->crop(500, 300, 0, 0);
             $thumbnail = "{$directory}/thumbnails/{$filename}.{$type}";
-            Storage::put(
+            Storage::disk('public')->put(
                 $thumbnail,
                 $image->stream($type, 100)->getContents()
             );
@@ -42,9 +42,10 @@ class AssetController extends BaseController
 
         return response()->json([
             'path' => $path,
-            'url'=> \Storage::url($path),
+            'filename' => $file->getClientOriginalName(),
+            'url'=> Storage::disk('cdn')->url($path),
             'thumbnail' => $thumbnail ?? null,
-            'thumbnail_url' => ! empty($thumbnail) ? \Storage::url($thumbnail) : null,
+            'thumbnail_url' => ! empty($thumbnail) ? \Storage::disk('cdn')->url($thumbnail) : null,
         ]);
     }
 
