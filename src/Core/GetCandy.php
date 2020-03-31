@@ -82,6 +82,7 @@ class GetCandy
         ];
     }
 
+
     public static function routes(array $options = [], $callback = null)
     {
         $callback = $callback ?: function ($router) {

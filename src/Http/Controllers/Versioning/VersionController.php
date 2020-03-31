@@ -22,11 +22,11 @@ class VersionController extends BaseController
         }
 
         $version = Version::findOrFail($id);
-
-        $result = Versioning::with('products')->restore($version);
-
-        return response()->json([
-            'id' => $result->encoded_id,
-        ]);
+        return \DB::transaction(function () use ($version) {
+            $result = Versioning::with('products')->restore($version);
+            return response()->json([
+                'id' => $result->encoded_id,
+            ]);
+        });
     }
 }

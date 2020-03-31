@@ -20,7 +20,6 @@ class ProductDrafter implements DrafterInterface
     {
         // Publish this product and remove the parent.
         $parent = $product->publishedParent;
-
         // Get any current versions and assign them to this new product.
 
         foreach ($parent->versions as $version) {
@@ -56,7 +55,7 @@ class ProductDrafter implements DrafterInterface
             ]);
 
         // Delete routes
-        $parent->routes()->delete();
+        // $parent->routes()->delete();
 
         $parent->forceDelete();
 

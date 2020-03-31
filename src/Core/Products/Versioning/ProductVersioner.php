@@ -25,7 +25,7 @@ class ProductVersioner extends AbstractVersioner implements VersionerInterface
 
         $attributes = $product->getAttributes();
 
-        if (is_string($attributes['attribute_data'])){
+        if (is_string($attributes['attribute_data'])) {
             $attributes['attribute_data'] = json_decode($attributes['attribute_data'], true);
         }
         // Base model
@@ -42,7 +42,6 @@ class ProductVersioner extends AbstractVersioner implements VersionerInterface
                 'pivot' => $channel->pivot->getAttributes()
             ]);
             $this->createFromObject($channel, $version->id, $data);
-
         }
 
         // Variants
@@ -64,8 +63,9 @@ class ProductVersioner extends AbstractVersioner implements VersionerInterface
             ]);
             $this->createFromObject($group, $version->id, $data);
         }
+
         // Routes
-        foreach ($product->routes as $route) {
+        foreach ($product->routes()->get() as $route) {
             $this->createFromObject($route, $version->id);
         }
 
@@ -73,11 +73,14 @@ class ProductVersioner extends AbstractVersioner implements VersionerInterface
         foreach ($product->assets as $asset) {
             Versioning::with('assets')->create($asset, $version->id);
         }
+
+        return $version;
     }
 
     public function restore($version)
     {
         $current = $version->versionable;
+
         // Do we already have a draft??
         $draft = $current->draft;
         // This is the new draft so...remove it.
@@ -131,6 +134,7 @@ class ProductVersioner extends AbstractVersioner implements VersionerInterface
                     $route->drafted_at = now();
                     $route->draft_parent_id = $relation->versionable_id;
                     $route->save();
+
                     break;
                 case Asset::class:
                     $data = $relation->model_data;
@@ -149,7 +153,6 @@ class ProductVersioner extends AbstractVersioner implements VersionerInterface
                     break;
             }
         }
-
         return $product;
     }
 }

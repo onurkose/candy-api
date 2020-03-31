@@ -24,11 +24,11 @@ class LayoutController extends BaseController
     public function show($id)
     {
         try {
-            $currency = app('api')->layouts()->getByEncodedId($id);
+            $currency = app('api')->layouts()->getByHashedId($id);
         } catch (ModelNotFoundException $e) {
             return $this->errorNotFound();
         }
 
-        return $this->respondWithItem($currency, new PageTransformer);
+        return $this->respondWithItem($currency, new LayoutTransformer);
     }
 }

@@ -37,9 +37,9 @@ class ProductVariantVersioner extends AbstractVersioner implements VersionerInte
         }
         $variant->drafted_at = now();
         $variant->save();
-        foreach ($version->relations as $relation) {
-            dd($relation);
-        }
+        // foreach ($version->relations as $relation) {
+        //     dd($relation);
+        // }
         return $variant;
     }
 }

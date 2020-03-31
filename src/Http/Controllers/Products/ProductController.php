@@ -2,6 +2,7 @@
 
 namespace GetCandy\Api\Http\Controllers\Products;
 
+use DB;
 use GetCandy\Api\Core\Baskets\Interfaces\BasketCriteriaInterface;
 use GetCandy\Api\Core\Products\Factories\ProductDuplicateFactory;
 use GetCandy\Api\Core\Products\Models\Product;
@@ -112,7 +113,9 @@ class ProductController extends BaseController
         }
         $product = $this->service->findById($id[0], [], true);
 
-        \Drafting::with('products')->publish($product);
+        // DB::transaction(function () use ($product) {
+            \Drafting::with('products')->publish($product);
+        // });
 
         $includes = $request->includes ? explode(',', $request->includes) : [];
 
