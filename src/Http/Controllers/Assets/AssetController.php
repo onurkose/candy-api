@@ -51,22 +51,21 @@ class AssetController extends BaseController
 
     public function store(UploadRequest $request)
     {
-        try {
+        $parent = null;
+        if ($request->parent_id) {
             $parent = app('api')->{$request->parent}()->getByHashedId($request->parent_id, true);
-        } catch (InvalidServiceException $e) {
-            return $this->errorWrongArgs($e->getMessage());
         }
 
         $data = $request->all();
 
-        if (empty($data['alt'])) {
-            $data['alt'] = $parent->attribute('name');
+        if (empty($data['caption'])) {
+            $data['caption'] = $parent ? $parent->attribute('name') : $request->caption;
         }
 
         $asset = app('api')->assets()->upload(
             $data,
             $parent,
-            $parent->assets()->count() + 1
+            $parent ? $parent->assets()->count() + 1 : 1
         );
 
         if (! $asset) {

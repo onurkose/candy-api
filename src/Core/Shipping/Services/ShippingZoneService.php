@@ -40,10 +40,17 @@ class ShippingZoneService extends BaseService
      * @throws  Illuminate\Database\Eloquent\ModelNotFoundException
      * @return Illuminate\Database\Eloquent\Model
      */
-    public function getByHashedId($id)
+    public function getByHashedId($id, $includes = null)
     {
         $id = $this->model->decodeId($id);
-        return $this->model->with(['regions'])->findOrFail($id);
+
+        $query = $this->model;
+
+        if ($includes) {
+            $query->with($includes);
+        }
+
+        return $query->findOrFail($id);
     }
 
     /**

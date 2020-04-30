@@ -21,7 +21,7 @@ class CollectionController extends BaseController
      */
     public function index(Request $request, CollectionCriteria $criteria)
     {
-        $collection = $criteria->include($request->includes)->limit(
+        $collection = $criteria->include($request->include)->limit(
             $request->per_page
         )->get();
 

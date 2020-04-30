@@ -35,7 +35,7 @@ class AssetService extends BaseService
      * @param  int $position
      * @return Asset
      */
-    public function upload($data, Model $model, $position = 0)
+    public function upload($data, Model $model = null, $position = 0)
     {
         if (! empty($data['file'])) {
             if ($data['file'] instanceof SplFileInfo) {
@@ -57,10 +57,6 @@ class AssetService extends BaseService
         if (! $asset) {
             return false;
         }
-
-        $asset->update([
-            'position' => $position,
-        ]);
 
         return $asset;
     }

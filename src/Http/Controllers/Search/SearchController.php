@@ -2,14 +2,15 @@
 
 namespace GetCandy\Api\Http\Controllers\Search;
 
-use GetCandy\Api\Core\Categories\Services\CategoryService;
-use GetCandy\Api\Core\Channels\Services\ChannelService;
+use Illuminate\Http\Request;
 use GetCandy\Api\Core\Search\SearchContract;
+use GetCandy\Api\Core\Products\Models\Product;
 use GetCandy\Api\Http\Controllers\BaseController;
 use GetCandy\Api\Http\Requests\Search\SearchRequest;
-use GetCandy\Api\Http\Transformers\Fractal\Search\SearchSuggestionTransformer;
+use GetCandy\Api\Core\Channels\Services\ChannelService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
+use GetCandy\Api\Core\Categories\Services\CategoryService;
+use GetCandy\Api\Http\Transformers\Fractal\Search\SearchSuggestionTransformer;
 
 class SearchController extends BaseController
 {
@@ -48,6 +49,7 @@ class SearchController extends BaseController
             $categories = null;
         }
 
+        // TODO: Deprecate current page
         if ($request->current_page) {
             $page = $request->current_page;
         } else {
@@ -103,8 +105,8 @@ class SearchController extends BaseController
             $results = $client
                 ->client()
                 ->language(app()->getLocale())
-                ->on($request->channel)
-                ->against($this->types[$request->type])
+                ->on('webstore')
+                ->against(Product::class)
                 ->user($request->user())
                 ->suggest($request->keywords);
         } catch (\Elastica\Exception\Connection\HttpException $e) {

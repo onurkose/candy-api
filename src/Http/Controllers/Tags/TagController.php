@@ -2,10 +2,11 @@
 
 namespace GetCandy\Api\Http\Controllers\Tags;
 
-use GetCandy\Api\Http\Controllers\BaseController;
-use GetCandy\Api\Http\Transformers\Fractal\Tags\TagTransformer;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use GetCandy\Api\Http\Controllers\BaseController;
+use GetCandy\Api\Http\Resources\Tags\TagCollection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use GetCandy\Api\Http\Transformers\Fractal\Tags\TagTransformer;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TagController extends BaseController
@@ -17,8 +18,7 @@ class TagController extends BaseController
     public function index(Request $request)
     {
         $tags = app('api')->tags()->getPaginatedData($request->per_page);
-
-        return $this->respondWithCollection($tags, new TagTransformer);
+        return new TagCollection($tags);
     }
 
     /**
@@ -42,7 +42,7 @@ class TagController extends BaseController
      * @param  CreateRequest $request
      * @return Json
      */
-    public function store(CreateRequest $request)
+    public function store(Request $request)
     {
         $tag = app('api')->tags()->create($request->all());
 

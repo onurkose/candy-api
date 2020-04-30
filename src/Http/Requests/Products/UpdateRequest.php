@@ -35,7 +35,7 @@ class UpdateRequest extends FormRequest
     public function messages()
     {
         return [
-            'attributes.*.*.*.required' => 'This Field is required',
+            'attribute_data.*.*.*.required' => 'This field is required',
         ];
     }
 }

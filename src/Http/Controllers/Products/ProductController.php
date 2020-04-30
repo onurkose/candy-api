@@ -53,7 +53,7 @@ class ProductController extends BaseController
         }
 
         $products = $criteria
-            ->include($request->includes)
+            ->include($request->include)
             ->ids($request->ids)
             ->limit($request->get('limit', 50))
             ->paginated($paginate)
@@ -72,11 +72,12 @@ class ProductController extends BaseController
         $id = Hashids::connection('product')->decode($idOrSku);
 
 
-        $includes = $request->includes ?: [];
+        $includes = $request->include ?: [];
 
         if ($includes && is_string($includes)) {
-            $includes = explode(',', $request->includes);
+            $includes = explode(',', $includes);
         }
+
 
         if (empty($id[0])) {
             $product = $this->service->findBySku($idOrSku, $includes, $request->draft);

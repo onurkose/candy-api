@@ -2,15 +2,17 @@
 
 namespace GetCandy\Api\Http\Controllers\Languages;
 
+use Illuminate\Http\Request;
 use GetCandy\Api\Http\Controllers\BaseController;
 use GetCandy\Api\Http\Requests\Languages\CreateRequest;
 use GetCandy\Api\Http\Requests\Languages\DeleteRequest;
 use GetCandy\Api\Http\Requests\Languages\UpdateRequest;
-use GetCandy\Api\Http\Transformers\Fractal\Languages\LanguageTransformer;
 use GetCandy\Exceptions\MinimumRecordRequiredException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
+use GetCandy\Api\Http\Resources\Languages\LanguageResource;
+use GetCandy\Api\Http\Resources\Languages\LanguageCollection;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use GetCandy\Api\Http\Transformers\Fractal\Languages\LanguageTransformer;
 
 class LanguageController extends BaseController
 {
@@ -21,8 +23,7 @@ class LanguageController extends BaseController
     public function index(Request $request)
     {
         $paginator = app('api')->languages()->getPaginatedData($request->per_page);
-
-        return $this->respondWithCollection($paginator, new LanguageTransformer);
+        return new LanguageCollection($paginator);
     }
 
     /**
@@ -48,8 +49,7 @@ class LanguageController extends BaseController
     public function store(CreateRequest $request)
     {
         $result = app('api')->languages()->create($request->all());
-
-        return $this->respondWithItem($result, new LanguageTransformer);
+        return new LanguageResource($result);
     }
 
     /**

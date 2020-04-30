@@ -60,8 +60,9 @@ class CategoryCriteria extends AbstractCriteria
         }
 
         $builder->defaultOrder()
-            ->withDepth()
-            ->having('depth', '<=', $this->depth);
+            ->groupBy('categories.id')
+            ->having('depth', '<=', $this->depth)
+            ->withDepth();
 
         return $builder;
     }

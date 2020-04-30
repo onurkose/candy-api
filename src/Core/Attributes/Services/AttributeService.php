@@ -140,7 +140,7 @@ class AttributeService extends BaseService
 
         $attribute->save();
 
-        event(new AttributeSavedEvent);
+        // event(new AttributeSavedEvent);
 
         return $attribute;
     }

@@ -8,6 +8,7 @@ use GetCandy\Api\Http\Requests\Orders\Lines\CreateRequest;
 use GetCandy\Api\Http\Requests\Orders\Lines\DeleteRequest;
 use GetCandy\Api\Http\Transformers\Fractal\Orders\OrderTransformer;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use GetCandy\Api\Http\Resources\Orders\OrderResource;
 
 class OrderLineController extends BaseController
 {
@@ -34,7 +35,7 @@ class OrderLineController extends BaseController
             return $this->errorNotFound();
         }
 
-        return $this->respondWithItem($result, new OrderTransformer);
+        return new OrderResource($result);
     }
 
     /**

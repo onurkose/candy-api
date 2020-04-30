@@ -19,8 +19,10 @@ class CategoryResource extends AbstractResource
         return [
             'id' => $this->encodedId(),
             'sort' => $this->sort,
-            'products_count' => $this->when(! is_null($this->products_count), $this->products_count),
-            'children_count' => $this->when(! is_null($this->children_count), $this->children_count),
+            // 'products_count' => $this->when(! is_null($this->products_count), $this->products_count),
+            // 'children_count' => $this->when(! is_null($this->children_count), $this->children_count),
+            'products_count' => $this->products()->count(),
+            'children_count' => $this->children()->count(),
             'left_pos' => $this->_lft,
             'right_pos' => $this->_rgt,
         ];
@@ -37,7 +39,6 @@ class CategoryResource extends AbstractResource
             'assets' => new AssetCollection($this->whenLoaded('assets')),
             'primary_asset' => ['data' => new AssetResource($this->whenLoaded('primaryAsset'))],
             'attributes' => new AttributeCollection($this->whenLoaded('attributes')),
-            'routes' => new RouteCollection($this->whenLoaded('routes')),
             'customer_groups' => new CustomerGroupCollection($this->whenLoaded('customerGroups')),
             'products' => new ProductCollection($this->whenLoaded('products')),
         ];

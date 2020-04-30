@@ -110,6 +110,9 @@ class BasketService extends BaseService
      */
     public function getForOrder(Order $order)
     {
+        if (!$order->basket) {
+            return null;
+        }
         return $this->factory->init($order->basket)->get();
     }
 

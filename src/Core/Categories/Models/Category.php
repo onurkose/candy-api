@@ -25,20 +25,7 @@ class Category extends BaseModel
         HasChannels,
         HasRoutes,
         HasCustomerGroups;
-
-    /**
-     * The "booting" method of the model.
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::addGlobalScope(new CustomerGroupScope);
-        static::addGlobalScope(new ChannelScope);
-    }
-
+        
     protected $hashids = 'main';
 
     protected $settings = 'categories';

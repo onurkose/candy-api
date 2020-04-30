@@ -2,9 +2,9 @@
 
 namespace GetCandy\Api\Http\Controllers\Customers;
 
-use GetCandy\Api\Http\Controllers\BaseController;
-use GetCandy\Api\Http\Transformers\Fractal\Customers\CustomerGroupTransformer;
 use Illuminate\Http\Request;
+use GetCandy\Api\Http\Controllers\BaseController;
+use GetCandy\Api\Http\Resources\Customers\CustomerGroupCollection;
 
 class CustomerGroupController extends BaseController
 {
@@ -12,6 +12,6 @@ class CustomerGroupController extends BaseController
     {
         $groups = app('api')->customerGroups()->getPaginatedData($request->per_page);
 
-        return $this->respondWithCollection($groups, new CustomerGroupTransformer());
+        return new CustomerGroupCollection($groups);
     }
 }

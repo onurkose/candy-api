@@ -66,8 +66,7 @@ class AttributeController extends BaseController
     public function store(CreateRequest $request)
     {
         $result = app('api')->attributes()->create($request->all());
-
-        return $this->respondWithItem($result, new AttributeTransformer);
+        return new AttributeResource($result);
     }
 
     public function reorder(ReorderRequest $request)
@@ -93,6 +92,7 @@ class AttributeController extends BaseController
     {
         try {
             $result = app('api')->attributes()->update($id, $request->all());
+
         } catch (MinimumRecordRequiredException $e) {
             return $this->errorUnprocessable($e->getMessage());
         } catch (NotFoundHttpException $e) {

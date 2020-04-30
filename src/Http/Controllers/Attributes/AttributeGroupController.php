@@ -14,6 +14,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use GetCandy\Api\Http\Resources\Attributes\AttributeGroupResource;
 use GetCandy\Api\Http\Resources\Attributes\AttributeGroupCollection;
 use GetCandy\Api\Http\Transformers\Fractal\Attributes\AttributeGroupTransformer;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AttributeGroupController extends BaseController
 {
@@ -59,7 +60,7 @@ class AttributeGroupController extends BaseController
         $includes = $request->include ? explode(',', $request->include) : null;
         $result = app('api')->attributeGroups()->create($request->all(), $includes);
 
-        return $this->respondWithItem($result, new AttributeGroupTransformer);
+        return new AttributeGroupResource($result);
     }
 
     /**
@@ -78,6 +79,7 @@ class AttributeGroupController extends BaseController
             return $this->errorNotFound();
         }
 
+        return new AttributeGroupResource($result);
         return $this->respondWithItem($result, new AttributeGroupTransformer);
     }
 

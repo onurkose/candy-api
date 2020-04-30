@@ -2,18 +2,19 @@
 
 namespace GetCandy\Api\Http\Controllers\Layouts;
 
-use GetCandy\Api\Http\Controllers\BaseController;
-use GetCandy\Api\Http\Transformers\Fractal\Layouts\LayoutTransformer;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use GetCandy\Api\Http\Controllers\BaseController;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use GetCandy\Plugins\PageBuilder\Http\Resources\LayoutCollection;
+use GetCandy\Api\Http\Transformers\Fractal\Layouts\LayoutTransformer;
 
 class LayoutController extends BaseController
 {
     public function index()
     {
-        $pages = app('api')->layouts()->getPaginatedData();
-
-        return $this->respondWithCollection($pages, new LayoutTransformer);
+        return new LayoutCollection(
+            app('api')->layouts()->getPaginatedData()
+        );
     }
 
     /**

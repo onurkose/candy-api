@@ -54,6 +54,17 @@ class RecycleBinController extends BaseController
         return new RecycleBinResource($items);
     }
 
+    public function restore($id, Request $request)
+    {
+        $realId = Hashids::connection('recycle_bin')->decode($id);
+
+        if (!$realId = $realId[0] ?? null) {
+            return $this->errorNotFound();
+        }
+
+        $this->service->restore($realId);
+    }
+
     public function destroy($id, Request $request)
     {
         $realId = Hashids::connection('recycle_bin')->decode($id);

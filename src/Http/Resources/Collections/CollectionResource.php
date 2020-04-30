@@ -28,7 +28,6 @@ class CollectionResource extends AbstractResource
             'channels' => new ChannelCollection($this->whenLoaded('channels')),
             'assets' => new AssetCollection($this->whenLoaded('assets')),
             'attributes' => new AttributeCollection($this->whenLoaded('attributes')),
-            'routes' => new RouteCollection($this->whenLoaded('routes')),
             'products' => new ProductCollection($this->whenLoaded('products')),
             'customer_groups' => new CustomerGroupCollection($this->whenLoaded('customerGroups')),
         ];

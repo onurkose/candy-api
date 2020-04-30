@@ -128,8 +128,6 @@ class ShippingMethodService extends BaseService
     {
         // Get the zones for this order...
         $order = app('api')->orders()->getByHashedId($orderId);
-        $basket = $this->baskets->getForOrder($order);
-
         $zones = app('api')->shippingZones()->getByCountryName($order->shipping_details['country']);
         $basket = $order->basket;
         $calculator = new ShippingCalculator(app());
@@ -156,7 +154,7 @@ class ShippingMethodService extends BaseService
 
         $options = collect($options);
 
-        if ($basket->hasExclusions) {
+        if ($basket && $basket->hasExclusions) {
             $exclusions = collect();
             $basket->lines->each(function ($l) use ($exclusions) {
                 if (! $l->variant) {

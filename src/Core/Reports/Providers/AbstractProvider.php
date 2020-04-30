@@ -89,9 +89,7 @@ abstract class AbstractProvider
      */
     protected function getOrderQuery(DateTime $from = null, DateTime $to = null)
     {
-        return Order::withoutGlobalScope('open')
-            ->withoutGlobalScope('not_expired')
-            ->whereNotNull('placed_at')
+        return Order::whereNotNull('placed_at')
             ->whereBetween('placed_at', [
                 $from ?: $this->from,
                 $to ?: $this->to,

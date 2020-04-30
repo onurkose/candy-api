@@ -22,11 +22,7 @@ $router->get('/', function () {
     ]);
 });
 
-// Address Route
-$router->delete('addresses/{id}', 'Addresses\AddressController@destroy');
-$router->put('addresses/{id}', 'Addresses\AddressController@update');
-$router->post('addresses/{id}/default', 'Addresses\AddressController@makeDefault');
-$router->post('addresses/{id}/default/remove', 'Addresses\AddressController@removeDefault');
+
 
 // $router->get('channels', 'Channels\ChannelController@index');
 $router->get('channels/{id}', 'Channels\ChannelController@show');
@@ -92,19 +88,18 @@ $router->resource('customers', 'Customers\CustomerController', [
 $router->post('orders/process', 'Orders\OrderController@process');
 $router->post('orders/{id}/expire', 'Orders\OrderController@expire');
 $router->put('orders/{id}/shipping/address', 'Orders\OrderController@shippingAddress');
-$router->put('orders/{id}/shipping/methods', 'Orders\OrderController@shippingMethod');
+// $router->put('orders/{id}/shipping/methods', 'Orders\OrderController@shippingMethod');
 $router->get('orders/{id}/shipping/methods', 'Orders\OrderController@shippingMethods');
 $router->put('orders/{id}/shipping/cost', 'Orders\OrderController@shippingCost');
 $router->put('orders/{id}/contact', 'Orders\OrderController@addContact');
 $router->put('orders/{id}/billing/address', 'Orders\OrderController@billingAddress');
-
+$router->get('orders/types', 'Orders\OrderController@getTypes');
 $router->post('orders/{id}/lines', 'Orders\OrderLineController@store');
 $router->delete('orders/lines/{id}', 'Orders\OrderLineController@destroy');
 
 $router->resource('orders', 'Orders\OrderController', [
     'only' => ['store', 'show'],
 ]);
-$router->get('orders/{id}/invoice', 'Orders\OrderController@invoice');
 
 /*
     * Payments

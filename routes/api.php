@@ -34,7 +34,7 @@
     $router->post('assets/simple', 'Assets\AssetController@storeSimple');
     $router->post('assets/{assetId}/detach/{ownerId}', 'Assets\AssetController@detach');
     $router->resource('assets', 'Assets\AssetController', [
-        'except' => ['edit', 'create'],
+        'except' => ['index', 'edit', 'create', 'show'],
     ]);
 
     /*
@@ -82,7 +82,6 @@
      */
     $router->get('categories/parent/{parentID?}', 'Categories\CategoryController@getByParent');
     $router->post('categories/reorder', 'Categories\CategoryController@reorder');
-    $router->post('categories/{category}/products/attach', 'Products\ProductCategoryController@attach');
     $router->put('categories/{category}/products', 'Categories\CategoryController@putProducts');
     $router->post('categories/{category}/channels', 'Categories\CategoryController@putChannels');
     $router->post('categories/{category}/customer-groups', 'Categories\CategoryController@putCustomerGroups');
@@ -101,7 +100,7 @@
     ]);
 
     /*
-     * Channels
+     * Collections
      */
     $router->post('collections/{collection}/routes', 'Collections\CollectionRouteController@store');
     $router->put('collections/{collection}/products', 'Collections\CollectionProductController@store');
@@ -138,18 +137,18 @@
      * Layouts
      */
     $router->resource('layouts', 'Layouts\LayoutController', [
-        'except' => ['edit', 'create'],
+        'except' => ['edit', 'create', 'store'],
     ]);
 
     /*
      * Orders
      */
     $router->post('orders/bulk', 'Orders\OrderController@bulkUpdate');
-    $router->get('orders/types', 'Orders\OrderController@getTypes');
     $router->get('orders/export', 'Orders\OrderController@getExport');
     $router->post('orders/email-preview/{status}', 'Orders\OrderController@emailPreview');
+    $router->get('orders/{id}/invoice', 'Orders\OrderController@invoice');
     $router->resource('orders', 'Orders\OrderController', [
-        'only' => ['index', 'update'],
+        'only' => ['index', 'update', 'destroy'],
     ]);
 
     // /*
@@ -305,6 +304,11 @@
     $router->delete('recycle-bin/{id}', [
         'as' => 'recycle-bin.delete',
         'uses' => 'RecycleBin\RecycleBinController@destroy'
+    ]);
+
+    $router->post('recycle-bin/{id}/restore', [
+        'as' => 'recycle-bin.restore',
+        'uses' => 'RecycleBin\RecycleBinController@restore'
     ]);
 
     /**

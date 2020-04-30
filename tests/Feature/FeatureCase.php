@@ -2,26 +2,34 @@
 
 namespace Tests\Feature;
 
-use DB;
 use GetCandy;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Laravel\Passport\ClientRepository;
 use Tests\Stubs\User;
 use Tests\TestCase;
 
+use NeonDigital\OpenApiValidator\ValidatesWithOpenApi;
+
 abstract class FeatureCase extends TestCase
 {
+    use ValidatesWithOpenApi;
+
     protected $userToken;
 
     protected $clientToken;
 
     protected $headers = [];
 
+    protected $validator;
+
     public function setUp() : void
     {
         parent::setUp();
         GetCandy::routes();
         $this->artisan('passport:install');
+
+        $this->buildOpenApiValidator(
+            realpath(__DIR__ . '/../../open-api.yaml')
+        );
     }
 
     protected function getResponseContents($response)
@@ -65,6 +73,7 @@ abstract class FeatureCase extends TestCase
 
     public function json($method, $uri, array $data = [], array $headers = [])
     {
+        // dd($data);
         return parent::json($method, $uri, $data, array_merge($this->headers, $headers));
     }
 }

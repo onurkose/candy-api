@@ -17,9 +17,15 @@ class Image extends BaseUploadDriver implements AssetDriverContract
      *
      * @return \GetCandy\Api\Core\Assets\Models\Asset
      */
-    public function process(array $data, $model)
+    public function process(array $data, $model = null)
     {
-        $source = app('api')->assetSources()->getByHandle($model->settings['asset_source']);
+        $assetSources = app('api')->assetSources();
+
+        if ($model) {
+            $source = app('api')->assetSources()->getByHandle($model->settings['asset_source']);
+        } else {
+            $source = $assetSources->getDefaultRecord();
+        }
 
         $asset = $this->prepare($data, $source);
 
@@ -40,11 +46,13 @@ class Image extends BaseUploadDriver implements AssetDriverContract
 
         $asset->save();
 
-        $model->assets()->attach($asset, [
-            'primary' => !$model->assets()->images()->exists(),
-            'assetable_type' => get_class($model),
-            'position' => $model->assets()->count() + 1
-        ]);
+        if ($model) {
+            $model->assets()->attach($asset, [
+                'primary' => !$model->assets()->images()->exists(),
+                'assetable_type' => get_class($model),
+                'position' => $model->assets()->count() + 1
+            ]);
+        }
 
         if ($data['file'] instanceof SplFileInfo) {
             Storage::disk($source->disk)->put($asset->location.'/'.$asset->filename, $data['file']->getContents());
@@ -53,7 +61,7 @@ class Image extends BaseUploadDriver implements AssetDriverContract
         }
 
         if (! empty($image)) {
-            GenerateTransforms::dispatch($asset, $model->settings);
+            GenerateTransforms::dispatch($asset, $model ? $model->settings : null);
         }
 
         return $asset;

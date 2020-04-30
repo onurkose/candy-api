@@ -38,8 +38,8 @@ class ProductResource extends AbstractResource
     {
         return [
             'attributes' => new AttributeCollection($this->whenLoaded('attributes')),
-            'draft' => new self($this->whenLoaded('draft')),
-            'published_parent' => new self($this->whenLoaded('publishedParent')),
+            'draft' => ['data' => new self($this->whenLoaded('draft'))],
+            'published_parent' => ['data' => new self($this->whenLoaded('publishedParent'))],
             'assets' => new AssetCollection($this->whenLoaded('assets')),
             'family' => $this->include('family', ProductFamilyResource::class),
             'routes' => new RouteCollection($this->whenLoaded('routes')),

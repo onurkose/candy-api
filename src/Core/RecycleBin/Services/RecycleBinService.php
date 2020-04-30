@@ -31,6 +31,15 @@ class RecycleBinService implements RecycleBinServiceInterface
         return RecycleBin::with($includes)->findOrFail($id);
     }
 
+    public function restore($id)
+    {
+        $item = $this->findById($id);
+        if ($item->recyclable) {
+            $item->recyclable->restore();
+            $item->delete();
+        }
+    }
+    
     public function forceDelete($id)
     {
         $item = $this->findById($id);

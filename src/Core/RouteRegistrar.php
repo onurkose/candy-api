@@ -31,8 +31,8 @@ class RouteRegistrar
      */
     public function all()
     {
-        $this->forClients();
         $this->forAdmins();
+        $this->forClients();
     }
 
     /**

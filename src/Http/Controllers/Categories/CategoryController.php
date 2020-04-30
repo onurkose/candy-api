@@ -41,10 +41,9 @@ class CategoryController extends BaseController
     public function children($id, Request $request, CategoryCriteria $criteria)
     {
         $category = $criteria->id($id)->first();
-
         $query = $category
             ->children()
-            ->with($request->includes)
+            ->with($request->include)
             ->withCount(['products', 'children']);
 
         return new CategoryCollection($query->get());
@@ -83,11 +82,14 @@ class CategoryController extends BaseController
         return $this->respondWithCollection($categories, new CategoryTransformer);
     }
 
-    public function getByParent($parentID = null)
+    public function getByParent($parentID = null, Request $request)
     {
-        $categories = app('api')->categories()->getByParentID($parentID);
+        $categories = app('api')->categories()->getByParentID(
+            $parentID,
+            $this->parseIncludes($request->include)
+        );
 
-        return $this->respondWithCollection($categories, new CategoryFancytreeTransformer);
+        return new CategoryCollection($categories);
     }
 
     /**

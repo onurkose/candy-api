@@ -46,13 +46,17 @@ class CategoryService extends BaseService
         return $categories;
     }
 
-    public function getByParentID($encodedParentID)
+    public function getByParentID($encodedParentID, $includes = null)
     {
         $parentID = $this->model->decodeId($encodedParentID);
 
-        $categories = $this->model->where('parent_id', $parentID)->defaultOrder()->get();
+        $query = $this->model->where('parent_id', $parentID)->defaultOrder();
 
-        return $categories;
+        if ($includes) {
+            $query->with($includes);
+        }
+
+        return $query->get();
     }
 
     public function create(array $data)
