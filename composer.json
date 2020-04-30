@@ -12,10 +12,6 @@
         {
             "type": "vcs",
             "url": "https://github.com/neondigital/laravel-versioning.git"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/neondigital/laravel-openapi-validator.git"
         }
     ],
     "require": {
@@ -40,8 +36,7 @@
         "paypal/rest-api-sdk-php": "*",
         "neondigital/laravel-drafting": "dev-master",
         "neondigital/laravel-versioning": "dev-master",
-        "staudenmeir/eloquent-has-many-deep": "^1.7",
-        "neondigital/laravel-openapi-validator": "dev-master"
+        "staudenmeir/eloquent-has-many-deep": "^1.7"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
