@@ -48,27 +48,36 @@ abstract class BaseUrlDriver
      *
      * @return \GetCandy\Api\Core\Assets\Models\Asset
      */
-    public function process(array $data, Model $model)
+    public function process(array $data, Model $model = null)
     {
-        $this->source = app('api')->assetSources()->getByHandle($model->settings['asset_source']);
-        $this->model = $model;
+        $assetSources = app('api')->assetSources();
+
+        if ($model) {
+            $this->source = app('api')->assetSources()->getByHandle($model->settings['asset_source']);
+        } else {
+            $this->source = $assetSources->getDefaultRecord();
+        }
+
         $this->data = $data;
 
         $this->getInfo($this->data['url']);
 
         $asset = $this->prepare();
 
-        if ($model->assets()->count()) {
-            // Get anything that isn't an "application";
-            $image = $model->assets()->where('kind', '!=', 'application')->first();
-            if (! $image) {
+        if ($model) {
+            if ($model->assets()->count()) {
+                // Get anything that isn't an "application";
+                $image = $model->assets()->where('kind', '!=', 'application')->first();
+                if (! $image) {
+                    $asset->primary = true;
+                }
+            } else {
                 $asset->primary = true;
             }
-        } else {
-            $asset->primary = true;
+            $model->assets()->attach($asset);
         }
-        $model->assets()->save($asset);
 
+        $asset->save();
         dispatch(new GenerateTransforms($asset));
 
         return $asset;
