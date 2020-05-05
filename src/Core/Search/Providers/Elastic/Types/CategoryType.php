@@ -79,6 +79,9 @@ class CategoryType extends BaseType
                     'type' => 'text',
                     'analyzer' => 'english',
                 ],
+                'sortable' => [
+                    'type' => 'keyword',
+                ],
                 'suggest' => [
                     'type' => 'completion',
                 ],
