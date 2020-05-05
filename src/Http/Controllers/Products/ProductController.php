@@ -3,6 +3,7 @@
 namespace GetCandy\Api\Http\Controllers\Products;
 
 use DB;
+use Drafting;
 use GetCandy\Api\Core\Baskets\Interfaces\BasketCriteriaInterface;
 use GetCandy\Api\Core\Products\Factories\ProductDuplicateFactory;
 use GetCandy\Api\Core\Products\Models\Product;
@@ -101,7 +102,7 @@ class ProductController extends BaseController
             return $this->errorNotFound();
         }
         $product = $this->service->findById($id[0], [], false);
-        $draft = \Drafting::with('products')->firstOrCreate($product);
+        $draft = Drafting::with('products')->firstOrCreate($product);
 
         return new ProductResource($draft->load($request->includes));
     }
@@ -114,9 +115,7 @@ class ProductController extends BaseController
         }
         $product = $this->service->findById($id[0], [], true);
 
-        // DB::transaction(function () use ($product) {
-            \Drafting::with('products')->publish($product);
-        // });
+        Drafting::with('products')->publish($product);
 
         $includes = $request->includes ? explode(',', $request->includes) : [];
 
