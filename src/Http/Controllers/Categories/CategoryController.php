@@ -60,19 +60,11 @@ class CategoryController extends BaseController
         if (! $category) {
             return $this->errorNotFound();
         }
-        // try {
-        //     $category = $categories->with(
-        //         explode(',', $request->includes)
-        //     )->getByHashedId($id);
-        // } catch (ModelNotFoundException $e) {
-        //     return $this->errorNotFound();
-        // }
 
         $resource = new CategoryResource($category);
         $resource->only($this->parseIncludedFields($request));
 
         return $resource;
-        // return $this->respondWithItem($category, new CategoryTransformer);
     }
 
     public function getNested()
