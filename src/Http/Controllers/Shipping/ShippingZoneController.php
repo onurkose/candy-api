@@ -32,7 +32,7 @@ class ShippingZoneController extends BaseController
      * @param  string $id
      * @return Json
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
         try {
             $zone = app('api')->shippingZones()->getByHashedId($id, $this->parseIncludes($request->include));
