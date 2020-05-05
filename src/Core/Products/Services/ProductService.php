@@ -104,6 +104,11 @@ class ProductService extends BaseService
             $family->products()->save($product);
         }
 
+        if (! empty($data['layout_id'])) {
+            $layout = app('api')->layouts()->getByHashedId($data['layout_id']);
+            $product->layout_id = $layout->id;
+        }
+
 
         $product->save();
 
