@@ -148,11 +148,7 @@ class CategoryService extends BaseService
 
     public function updateChannels($id, array $data)
     {
-<<<<<<< HEAD
-        $category = $this->getByHashedId($id);
-=======
         $category = $this->getByHashedId($id, true);
->>>>>>> feat/category-versioning
         $category->channels()->sync(
             $this->getChannelMapping($data['channels'])
         );
@@ -161,11 +157,7 @@ class CategoryService extends BaseService
 
     public function updateCustomerGroups($id, array $groups)
     {
-<<<<<<< HEAD
-        $category = $this->getByHashedId($id);
-=======
         $category = $this->getByHashedId($id, true);
->>>>>>> feat/category-versioning
         $groupData = [];
         foreach ($groups as $group) {
             $groupModel = app('api')->customerGroups->getByHashedId($group['id']);
