@@ -238,28 +238,6 @@ class CategoryController extends BaseController
         return $this->respondWithItem($result, new CategoryTransformer);
     }
 
-    public function putChannels($id, Request $request)
-    {
-        try {
-            $category = app('api')->categories()->updateChannels($id, $request->all());
-        } catch (NotFoundException $e) {
-            return $this->errorNotFound();
-        }
-
-        return new CategoryResource($category);
-    }
-
-    public function putCustomerGroups($id, Request $request)
-    {
-        try {
-            $category = app('api')->categories()->updateCustomerGroups($id, $request->groups ?: []);
-        } catch (NotFoundException $e) {
-            return $this->errorNotFound();
-        }
-
-        return new CategoryResource($category);
-    }
-
     /**
      * Handles the request to delete a category.
      * @param  string        $id
