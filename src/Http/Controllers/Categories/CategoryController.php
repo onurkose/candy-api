@@ -2,7 +2,10 @@
 
 namespace GetCandy\Api\Http\Controllers\Categories;
 
+use Drafting;
 use GetCandy\Api\Core\Categories\CategoryCriteria;
+use GetCandy\Api\Core\Categories\Models\Category;
+use GetCandy\Api\Core\Categories\Services\CategoryService;
 use GetCandy\Api\Http\Controllers\BaseController;
 use GetCandy\Api\Http\Requests\Categories\CreateRequest;
 use GetCandy\Api\Http\Requests\Categories\DeleteRequest;
@@ -10,15 +13,21 @@ use GetCandy\Api\Http\Requests\Categories\ReorderRequest;
 use GetCandy\Api\Http\Requests\Categories\UpdateRequest;
 use GetCandy\Api\Http\Resources\Categories\CategoryCollection;
 use GetCandy\Api\Http\Resources\Categories\CategoryResource;
-use GetCandy\Api\Http\Transformers\Fractal\Categories\CategoryFancytreeTransformer;
 use GetCandy\Api\Http\Transformers\Fractal\Categories\CategoryTransformer;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Hashids;
 use Illuminate\Http\Request;
 use Intervention\Image\Exception\NotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CategoryController extends BaseController
 {
+    protected $service;
+
+    public function __construct(CategoryService $service)
+    {
+        $this->service = $service;
+    }
+
     public function index(Request $request, CategoryCriteria $criteria)
     {
         $criteria
@@ -49,15 +58,35 @@ class CategoryController extends BaseController
         return new CategoryCollection($query->get());
     }
 
-    public function show($id, Request $request, CategoryCriteria $criteria)
+    public function createDraft($id, Request $request)
     {
-        $category = $criteria
-            ->channel($request->channel)
-            ->include($request->includes)
-            ->id($id)
-            ->first();
+        $id = Hashids::connection('main')->decode($id);
+        if (empty($id[0])) {
+            return $this->errorNotFound();
+        }
+        $category = $this->service->findById($id[0], [], false);
 
-        if (! $category) {
+        $draft = \Drafting::with('categories')->firstOrCreate($category);
+        return new CategoryResource($draft->load($request->includes));
+    }
+
+    public function show($id, Request $request)
+    {
+        $id = (new Category)->decodeId($id);
+
+        $includes = $request->include ?: [];
+
+        if ($includes && is_string($includes)) {
+            $includes = $this->parseIncludes($includes);
+        }
+
+        if (!$id) {
+            return $this->errorNotFound();
+        }
+
+        $category = $this->service->findById($id, $includes, $request->draft);
+
+        if (!$category) {
             return $this->errorNotFound();
         }
 
@@ -156,6 +185,46 @@ class CategoryController extends BaseController
         }
 
         return $this->respondWithItem($result, new CategoryTransformer);
+    }
+
+    public function publishDraft($id, Request $request)
+    {
+        $id = Hashids::connection('main')->decode($id);
+        if (empty($id[0])) {
+            return $this->errorNotFound();
+        }
+        $category = $this->service->findById($id[0], [], true);
+
+        \DB::transaction(function () use ($category) {
+            Drafting::with('categories')->publish($category);
+        });
+
+
+        $includes = $request->includes ? explode(',', $request->include) : [];
+
+        return new CategoryResource($category->load($includes));
+    }
+
+    public function putChannels($id, Request $request)
+    {
+        try {
+            $category = app('api')->categories()->updateChannels($id, $request->all());
+        } catch (NotFoundException $e) {
+            return $this->errorNotFound();
+        }
+
+        return new CategoryResource($category);
+    }
+
+    public function putCustomerGroups($id, Request $request)
+    {
+        try {
+            $category = app('api')->categories()->updateCustomerGroups($id, $request->groups ?: []);
+        } catch (NotFoundException $e) {
+            return $this->errorNotFound();
+        }
+
+        return new CategoryResource($category);
     }
 
     public function putProducts($id, Request $request)

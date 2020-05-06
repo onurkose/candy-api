@@ -16,14 +16,15 @@ class VersionController extends BaseController
     {
         // Get the real id.
         $id = Hashids::decode($id)[0] ?? null;
+        $type = $request->type ?: 'products';
 
         if (!$id) {
             return $this->errorNotFound();
         }
 
         $version = Version::findOrFail($id);
-        return \DB::transaction(function () use ($version) {
-            $result = Versioning::with('products')->restore($version);
+        return \DB::transaction(function () use ($version, $type) {
+            $result = Versioning::with($type)->restore($version);
             return response()->json([
                 'id' => $result->encoded_id,
             ]);

@@ -39,6 +39,17 @@ class CategoryService extends BaseService
         return $this->model->with($this->with)->withDepth()->withoutGlobalScopes()->findOrFail($id);
     }
 
+    public function findById($id, array $includes = [], $draft = false)
+    {
+        $query = Category::with(array_merge($includes, ['draft']));
+
+        if ($draft) {
+            $query->withDrafted()->withoutGlobalScopes();
+        }
+
+        return $query->find($id);
+    }
+
     public function getNestedList()
     {
         $categories = $this->model->withDepth()->defaultOrder()->get()->toTree();
@@ -107,15 +118,15 @@ class CategoryService extends BaseService
 
     public function update($hashedId, array $data)
     {
-        $model = $this->getByHashedId($hashedId);
-        $model->attribute_data = $data['attributes'];
+        $model = $this->getByHashedId($hashedId, true);
+        $model->attribute_data = $data['attribute_data'];
 
         if (! empty($data['customer_groups'])) {
             $groupData = $this->mapCustomerGroupData($data['customer_groups']['data']);
             $model->customerGroups()->sync($groupData);
         }
 
-        if ($data['layout_id']) {
+        if (!empty($data['layout_id'])) {
             $realLayoutId = app('api')->layouts()->getDecodedId($data['layout_id']);
             $model->layout_id = $realLayoutId;
         }
@@ -137,7 +148,11 @@ class CategoryService extends BaseService
 
     public function updateChannels($id, array $data)
     {
+<<<<<<< HEAD
         $category = $this->getByHashedId($id);
+=======
+        $category = $this->getByHashedId($id, true);
+>>>>>>> feat/category-versioning
         $category->channels()->sync(
             $this->getChannelMapping($data['channels'])
         );
@@ -146,7 +161,11 @@ class CategoryService extends BaseService
 
     public function updateCustomerGroups($id, array $groups)
     {
+<<<<<<< HEAD
         $category = $this->getByHashedId($id);
+=======
+        $category = $this->getByHashedId($id, true);
+>>>>>>> feat/category-versioning
         $groupData = [];
         foreach ($groups as $group) {
             $groupModel = app('api')->customerGroups->getByHashedId($group['id']);
@@ -217,8 +236,8 @@ class CategoryService extends BaseService
     {
         $response = false;
 
-        $node = $this->getByHashedId($data['node']);
-        $movedNode = $this->getByHashedId($data['moved-node']);
+        $node = $this->getByHashedId($data['node'], true);
+        $movedNode = $this->getByHashedId($data['moved-node'], true);
         $action = $data['action'];
 
         switch ($action) {

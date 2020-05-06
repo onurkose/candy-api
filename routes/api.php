@@ -82,12 +82,15 @@
      */
     $router->get('categories/parent/{parentID?}', 'Categories\CategoryController@getByParent');
     $router->post('categories/reorder', 'Categories\CategoryController@reorder');
+    $router->post('categories/{category}/products/attach', 'Products\ProductCategoryController@attach');
+    $router->post('categories/{category}/drafts', 'Categories\CategoryController@createDraft');
     $router->put('categories/{category}/products', 'Categories\CategoryController@putProducts');
     $router->post('categories/{category}/channels', 'Categories\CategoryController@putChannels');
     $router->post('categories/{category}/customer-groups', 'Categories\CategoryController@putCustomerGroups');
     $router->put('categories/{category}/layouts', 'Categories\LayoutController@store');
 
     $router->post('categories/{category}/routes', 'Categories\CategoryRouteController@store');
+    $router->post('categories/{id}/publish', 'Categories\CategoryController@publishDraft');
     $router->resource('categories', 'Categories\CategoryController', [
         'except' => ['index', 'edit', 'create', 'show'],
     ]);
