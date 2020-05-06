@@ -9,6 +9,8 @@ use GetCandy\Api\Core\Traits\HasAttributes;
 use GetCandy\Api\Core\Traits\HasChannels;
 use GetCandy\Api\Core\Traits\HasCustomerGroups;
 use GetCandy\Api\Core\Traits\HasRoutes;
+use NeonDigital\Drafting\Draftable;
+use NeonDigital\Versioning\Versionable;
 
 class Collection extends BaseModel
 {
@@ -16,9 +18,11 @@ class Collection extends BaseModel
         HasAttributes,
         HasChannels,
         HasRoutes,
-        HasCustomerGroups;
+        HasCustomerGroups,
+        Draftable,
+        Versionable;
 
-    protected $hashids = 'channel';
+    protected $hashids = 'main';
 
     protected $settings = 'collections';
 

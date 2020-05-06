@@ -378,8 +378,8 @@ abstract class BaseService
      */
     public function update($hashedId, array $data)
     {
-        $model = $this->getByHashedId($hashedId);
-        $model->attribute_data = $data['attributes'];
+        $model = $this->getByHashedId($hashedId, true);
+        $model->attribute_data = $data['attribute_data'];
 
         if (! empty($data['customer_groups'])) {
             $groupData = $this->mapCustomerGroupData($data['customer_groups']['data']);

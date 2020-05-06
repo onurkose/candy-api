@@ -106,6 +106,8 @@
      * Collections
      */
     $router->post('collections/{collection}/routes', 'Collections\CollectionRouteController@store');
+    $router->post('collections/{collection}/drafts', 'Collections\CollectionController@createDraft');
+    $router->post('collections/{collection}/publish', 'Collections\CollectionController@publishDraft');
     $router->put('collections/{collection}/products', 'Collections\CollectionProductController@store');
     $router->resource('collections', 'Collections\CollectionController', [
         'except' => ['index', 'edit', 'create', 'show'],
