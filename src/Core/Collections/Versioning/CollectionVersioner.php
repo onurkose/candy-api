@@ -4,7 +4,6 @@ namespace GetCandy\Api\Core\Collections\Versioning;
 
 use Auth;
 use Drafting;
-use GetCandy\Api\Core\Collections\Models\Collection;
 use Illuminate\Database\Eloquent\Model;
 use NeonDigital\Versioning\Interfaces\VersionerInterface;
 use NeonDigital\Versioning\Version;
@@ -40,15 +39,15 @@ class CollectionVersioner extends AbstractVersioner implements VersionerInterfac
         $current = $version->versionable;
 
         // This is the new draft so...remove it.
-        $category = Drafting::with('categories')->firstOrCreate($current);
+        $collection = Drafting::with('collections')->firstOrCreate($current);
 
         // Okay so, hydrate this draft...
         $data = $version->model_data;
-        $category->forceFill(Arr::except($data, ['id', 'drafted_at', 'draft_parent_id']));
+        $collection->forceFill(Arr::except($data, ['id', 'drafted_at', 'draft_parent_id']));
 
-        $category->attribute_data = $data['attribute_data'];
-        $category->save();
+        $collection->attribute_data = $data['attribute_data'];
+        $collection->save();
 
-        return $category;
+        return $collection;
     }
 }

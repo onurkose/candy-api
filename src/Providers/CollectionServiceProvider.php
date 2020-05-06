@@ -16,7 +16,7 @@ class CollectionServiceProvider extends ServiceProvider
             return $app->make(CollectionDrafter::class);
         });
 
-        Versioning::extend('collection', function ($app) {
+        Versioning::extend('collections', function ($app) {
             return $app->make(CollectionVersioner::class);
         });
     }
