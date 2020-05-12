@@ -96,13 +96,16 @@ class ProductVariant extends BaseModel
     public function setOptionsAttribute($val)
     {
         $options = [];
-        foreach ($val as $option => $value) {
-            if (is_array($value)) {
-                $value = reset($value);
+
+        if (!$this->id) {
+            foreach ($val as $option => $value) {
+                if (is_array($value)) {
+                    $value = reset($value);
+                }
+                $options[str_slug($option)] = str_slug($value);
             }
-            $options[str_slug($option)] = str_slug($value);
+            $this->attributes['options'] = json_encode($options);
         }
-        $this->attributes['options'] = json_encode($options);
     }
 
     public function image()
