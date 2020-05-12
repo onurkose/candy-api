@@ -23,6 +23,7 @@ class AssetTransformer extends BaseTransformer
      */
     public function transform($asset)
     {
+        \Log::debug($asset->pivot);
         $data = [
             'id' => $asset->encodedId(),
             'title' => $asset->title,
@@ -30,8 +31,8 @@ class AssetTransformer extends BaseTransformer
             'kind' => $asset->kind,
             'external' => (bool) $asset->external,
             'thumbnail' => $this->getThumbnail($asset),
-            'position' => (int) $asset->position,
-            'primary' => (bool) $asset->primary,
+            'position' => $asset->pivot ? $asset->pivot->position : 1,
+            'primary' => (bool) $asset->pivot ? $asset->pivot->primary : false,
         ];
 
         if (! $asset->external) {
