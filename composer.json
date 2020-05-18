@@ -16,10 +16,12 @@
         "laravel/framework": "^7.0",
         "laravel/passport": "^9.2.1",
         "league/fractal": "^0.17.0",
+        "doctrine/dbal": "2.9.2",
         "ruflin/elastica": "^6.1",
         "spatie/laravel-permission": "^3.12",
         "vinkla/hashids": "^8.1",
         "paypal/rest-api-sdk-php": "*",
+        "laravel/helpers": "1.2.0",
         "neondigital/laravel-drafting": "dev-master",
         "neondigital/laravel-versioning": "dev-master",
         "staudenmeir/eloquent-has-many-deep": "^1.7"
