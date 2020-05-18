@@ -105,6 +105,8 @@ class ProductVariant extends BaseModel
                 $options[str_slug($option)] = str_slug($value);
             }
             $this->attributes['options'] = json_encode($options);
+        } else {
+            $this->attributes['options'] = $val;
         }
     }
 
