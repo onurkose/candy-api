@@ -19,8 +19,6 @@
         "ruflin/elastica": "^6.1",
         "spatie/laravel-permission": "^3.12",
         "vinkla/hashids": "^8.1",
-        "ankitpokhrel/tus-php": "dev-symfony-5 as 1.10.0",
-        "vimeo/laravel": "^5.5",
         "paypal/rest-api-sdk-php": "*",
         "neondigital/laravel-drafting": "dev-master",
         "neondigital/laravel-versioning": "dev-master",
