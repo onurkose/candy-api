@@ -197,7 +197,21 @@ class ProductVariantService extends BaseService
             $variant->tiers()->delete();
         }
 
+
+        $options = [];
+
+        foreach ($data['options'] ?? [] as $option => $value) {
+            if (is_array($value)) {
+                $value = reset($value);
+            }
+            $options[str_slug($option)] = str_slug($value);
+        }
+
+        $variant->options = json_encode($options);
+
+        // $this->attributes['options'] = json_encode($options);
         $variant->save();
+
 
         $variant->product->update([
             'option_data' => $this->remapProductOptions($variant, $data['options'] ?? []),
@@ -245,33 +259,8 @@ class ProductVariantService extends BaseService
     public function remapProductOptions($variant, $incoming)
     {
         $optionsAvailable = [];
-        $optionData = $variant->product->option_data;
         $variants = $variant->product()->first()->variants;
-
-        $optionData = $this->mapOptions($optionData, $incoming);
-
-        foreach ($variants as $variant) {
-            $originialData = json_decode($variant->getOriginal('options'), true);
-            $parsedData = $variant->options;
-            foreach ($originialData as $handle => $value) {
-                $optionsAvailable[$handle][] = $value;
-            }
-        }
-
-        // Remove any that don't exist
-        foreach ($optionData as $handle => $option) {
-            $available = $optionsAvailable[$handle] ?? null;
-            if (!$available) {
-                unset($optionData[$handle]);
-                continue;
-            }
-            foreach ($option['options'] as $field => $value) {
-                if (!in_array($field, $available)) {
-                    unset($optionData[$handle]['options'][$field]);
-                    continue;
-                }
-            }
-        }
+        $optionData = $this->mapOptions($variant->product->option_data, $incoming);
 
         return $optionData;
     }
