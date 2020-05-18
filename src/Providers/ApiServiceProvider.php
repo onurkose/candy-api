@@ -8,10 +8,11 @@ use League\Fractal\Manager;
 use GetCandy\Api\Core\Factory;
 use Laravel\Passport\Passport;
 use Illuminate\Support\ServiceProvider;
+use GetCandy\Api\Core\GetCandy;
+use GetCandy\Api\Core\Users\Contracts\UserContract;
 use GetCandy\Api\Core\Users\Services\UserService;
 use GetCandy\Api\Http\Middleware\SetTaxMiddleware;
 use GetCandy\Api\Core\Currencies\CurrencyConverter;
-use GetCandy\Api\Core\Users\Contracts\UserContract;
 use GetCandy\Api\Http\Middleware\SetCustomerGroups;
 use GetCandy\Api\Http\Middleware\SetLocaleMiddleware;
 use GetCandy\Api\Providers\CollectionServiceProvider;
@@ -149,9 +150,9 @@ class ApiServiceProvider extends ServiceProvider
      */
     protected function mapBindings()
     {
-        $this->app->register(
-            \Alaouy\Youtube\YoutubeServiceProvider::class
-        );
+        // $this->app->register(
+        //     \Alaouy\Youtube\YoutubeServiceProvider::class
+        // );
 
         $this->app->singleton(UserContract::class, function ($app) {
             return $app->make(UserService::class);

@@ -61,6 +61,7 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
             };
         });
     }
+    protected $withSeedData = true;
 
     protected $adminRoutes = [
         'import',
@@ -87,7 +88,11 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
 
         $this->artisan('cache:forget', ['key' => 'spatie.permission.cache']);
         $this->artisan('migrate', ['--database' => 'testing']);
-        $this->artisan('db:seed', ['--class' => '\Seeds\TestingDatabaseSeeder']);
+
+        if ($this->withSeedData) {
+            $this->artisan('db:seed', ['--class' => '\Seeds\TestingDatabaseSeeder']);
+        }
+
         $this->withFactories(dirname(__DIR__).'/database/factories');
 
         // Make sure our channel is set.
