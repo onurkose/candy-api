@@ -51,6 +51,7 @@ abstract class FeatureCase extends TestCase
 
         $this->headers['Accept'] = 'application/json';
         $this->headers['Authorization'] = 'Bearer '.$token;
+        $this->headers['X-CANDY-HUB'] = 1;
 
         return $this;
     }
