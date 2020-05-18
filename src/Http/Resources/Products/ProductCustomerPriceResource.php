@@ -19,8 +19,8 @@ class ProductCustomerPriceResource extends AbstractResource
     public function includes()
     {
         return [
-            'tax' => new TaxResource($this->whenLoaded('tax')),
-            'group' => new CustomerGroupResource($this->whenLoaded('group')),
+            'tax' => ['data' => new TaxResource($this->whenLoaded('tax'))],
+            'group' => ['data' => new CustomerGroupResource($this->whenLoaded('group'))],
         ];
     }
 }
