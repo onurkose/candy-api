@@ -92,7 +92,7 @@ class ProductVariantService extends BaseService
             ]);
         }
 
-        return $product;
+        return $product->load('variants');
     }
 
     public function canAddToBasket($variantId, $quantity)
