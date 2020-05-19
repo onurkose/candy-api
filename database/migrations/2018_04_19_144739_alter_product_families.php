@@ -14,7 +14,7 @@ class AlterProductFamilies extends Migration
     public function up()
     {
         Schema::table('product_families', function (Blueprint $table) {
-            $table->json('name')->nullable();
+            $table->string('name')->nullable();
         });
     }
 
