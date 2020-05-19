@@ -29,13 +29,7 @@ class ProductFamilyRunner extends AbstractRunner implements InstallRunnerContrac
         $channelHandle = $this->getChannelHandle();
 
         $familyId = DB::table('product_families')->insertGetId([
-            'attribute_data' => json_encode([
-                'name' => [
-                    $channelHandle => [
-                        'en' => 'Default',
-                    ],
-                ],
-            ]),
+            'name' => 'Default',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
