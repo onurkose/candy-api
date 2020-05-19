@@ -15,7 +15,7 @@ class CreateUsersTableIfNotExists extends Migration
     {
         if (! Schema::hasTable('users')) {
             Schema::create('users', function (Blueprint $table) {
-                $table->increments('id');
+                $table->id();
                 $table->string('name');
                 $table->string('email')->unique();
                 $table->string('password');
