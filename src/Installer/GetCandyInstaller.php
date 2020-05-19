@@ -2,20 +2,21 @@
 
 namespace GetCandy\Api\Installer;
 
+use Illuminate\Console\Command;
+use GetCandy\Api\Installer\Runners\TaxRunner;
+use GetCandy\Api\Installer\Runners\UserRunner;
 use GetCandy\Api\Installer\Runners\AssetRunner;
-use GetCandy\Api\Installer\Runners\AssociationGroupRunner;
-use GetCandy\Api\Installer\Runners\AttributeRunner;
 use GetCandy\Api\Installer\Runners\ChannelRunner;
 use GetCandy\Api\Installer\Runners\CountryRunner;
 use GetCandy\Api\Installer\Runners\CurrencyRunner;
-use GetCandy\Api\Installer\Runners\CustomerGroupRunner;
 use GetCandy\Api\Installer\Runners\LanguageRunner;
-use GetCandy\Api\Installer\Runners\PreflightRunner;
-use GetCandy\Api\Installer\Runners\ProductFamilyRunner;
 use GetCandy\Api\Installer\Runners\SettingsRunner;
-use GetCandy\Api\Installer\Runners\TaxRunner;
-use GetCandy\Api\Installer\Runners\UserRunner;
-use Illuminate\Console\Command;
+use GetCandy\Api\Installer\Runners\AttributeRunner;
+use GetCandy\Api\Installer\Runners\PreflightRunner;
+use GetCandy\Api\Installer\Runners\PaymentTypeRunner;
+use GetCandy\Api\Installer\Runners\CustomerGroupRunner;
+use GetCandy\Api\Installer\Runners\ProductFamilyRunner;
+use GetCandy\Api\Installer\Runners\AssociationGroupRunner;
 
 class GetCandyInstaller
 {
@@ -35,6 +36,7 @@ class GetCandyInstaller
         'users' => UserRunner::class,
         'channels' => ChannelRunner::class,
         'product_families' => ProductFamilyRunner::class,
+        'payment_types' => PaymentTypeRunner::class,
     ];
 
     /**
