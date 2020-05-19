@@ -13,7 +13,11 @@ use Laravel\Passport\Passport;
 use Laravel\Passport\TokenRepository;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\ResourceServer;
-use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
+use Laminas\Diactoros\ResponseFactory;
+use Laminas\Diactoros\ServerRequestFactory;
+use Laminas\Diactoros\StreamFactory;
+use Laminas\Diactoros\UploadedFileFactory;
+use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 
 class CheckClientCredentials extends BaseMiddleware
 {
@@ -55,7 +59,13 @@ class CheckClientCredentials extends BaseMiddleware
      */
     public function handle($request, Closure $next, ...$scopes)
     {
-        $psr = (new DiactorosFactory)->createRequest($request);
+        $psr = (new PsrHttpFactory(
+            new ServerRequestFactory,
+            new StreamFactory,
+            new UploadedFileFactory,
+            new ResponseFactory
+        ))->createRequest($request);
+
 
         $cookies = $psr->getCookieParams();
 
@@ -86,8 +96,6 @@ class CheckClientCredentials extends BaseMiddleware
 
             return $next($request);
         }
-
-        $this->validateScopes($psr, $scopes);
 
         return $next($request);
     }
