@@ -3,11 +3,10 @@
 namespace GetCandy\Api\Core\Products\Drafting;
 
 use DB;
-use GetCandy\Api\Core\Products\Models\ProductAssociation;
+use Versioning;
 use Illuminate\Database\Eloquent\Model;
 use NeonDigital\Drafting\Interfaces\DrafterInterface;
-use Storage;
-use Versioning;
+use GetCandy\Api\Core\Products\Events\ProductCreatedEvent;
 
 class ProductDrafter implements DrafterInterface
 {
@@ -61,6 +60,8 @@ class ProductDrafter implements DrafterInterface
 
         $product->drafted_at = null;
         $product->save();
+
+        event(new ProductCreatedEvent($product));
 
         return $product;
     }
