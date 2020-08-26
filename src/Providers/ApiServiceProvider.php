@@ -147,7 +147,6 @@ class ApiServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                CandySearchIndexCommand::class,
                 InstallGetCandyCommand::class,
                 ScoreProductsCommand::class,
             ]);
