@@ -1,16 +1,16 @@
 <?php
 
-namespace GetCandy\Api\Core\Search\Traits;
+namespace GetCandy\Api\Core\Search\Actions;
 
-use Elastica\Client;
+use Lorisleiva\Actions\Action;
 use GetCandy\Api\Core\Search\Actions\CreateIndexAction;
 use GetCandy\Api\Core\Search\Actions\UpdateMappingAction;
 use GetCandy\Api\Core\Languages\Actions\FetchLanguagesAction;
 
-trait InteractsWithIndexTrait
+class AbstractIndexAction extends Action
 {
     /**
-     * Gets a timestamped index.
+     * Gets a timestamped index name.
      *
      * @param  mixed  $type
      * @return string
@@ -26,7 +26,7 @@ trait InteractsWithIndexTrait
     {
         $languages = FetchLanguagesAction::run();
         $indexName = $this->getNewIndexName();
-        $suffix = microtime(true);
+        $suffix = $this->timestamp ?? microtime(true);
         $aliases = [];
 
         foreach ($languages as $language) {

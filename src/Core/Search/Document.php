@@ -2,7 +2,7 @@
 
 namespace GetCandy\Api\Core\Search;
 
-class Indexable
+class Document
 {
     protected $data = [];
 

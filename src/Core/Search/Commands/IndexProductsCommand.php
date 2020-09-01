@@ -47,11 +47,11 @@ class IndexProductsCommand extends Command
 
         $this->output->text('Indexing ' . $total . ' products in ' . ceil($total / $batchsize) . ' batches');
         $this->output->progressStart(ceil($total / $batchsize));
-
         Product::withoutGlobalScopes()->chunk($batchsize, function ($products, $index) {
             IndexProductsAction::run([
                 'products' => $products,
             ]);
+            dd(1);
             tap($this->output)->progressAdvance();
         });
         // $this->output->text('Indexing products');

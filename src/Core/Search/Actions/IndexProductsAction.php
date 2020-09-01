@@ -2,23 +2,13 @@
 
 namespace GetCandy\Api\Core\Search\Actions;
 
-use DateTime;
-use Illuminate\Support\Arr;
-use Lorisleiva\Actions\Action;
 use GetCandy\Api\Core\Addresses\Models\Address;
-use GetCandy\Api\Core\Countries\Models\Country;
-use GetCandy\Api\Core\Search\Mapping\ProductMapping;
-use GetCandy\Api\Core\Users\Actions\FetchUserAction;
+use GetCandy\Api\Core\Search\Indexables\ProductIndexable;
 use GetCandy\Api\Core\Addresses\Resources\AddressResource;
 use GetCandy\Api\Core\Search\Actions\GetIndiceNamesAction;
-use GetCandy\Api\Core\Countries\Actions\FetchCountryAction;
-use GetCandy\Api\Core\Search\Traits\InteractsWithIndexTrait;
-use GetCandy\Api\Core\Languages\Actions\FetchLanguagesAction;
 
-class IndexProductsAction extends Action
+class IndexProductsAction extends AbstractIndexAction
 {
-    use InteractsWithIndexTrait;
-
     /**
      * Determine if the user is authorized to make this action.
      *
@@ -51,14 +41,20 @@ class IndexProductsAction extends Action
      */
     public function handle()
     {
-        $aliases = $this->getNewAliases(new ProductMapping, 'products');
+        $this->timestamp = microtime(true);
 
-        $indiceNames = GetIndiceNamesAction::run();
+        $aliases = $this->getNewAliases(new ProductIndexable, 'products');
+
+        $indiceNames = GetIndiceNamesAction::run([
+            'filter' => $this->getNewIndexName()
+        ]);
+
         foreach ($this->products as $product) {
-            $document = GetProductIndexDocumentAction::run([
-                'product' => $product,
-            ]);
-            dd($document);
+            $documents = (new ProductIndexable($product))
+                ->setIndexName($this->getNewIndexName())
+                ->setSuffix($this->timestamp)
+                ->getDocuments();
+            dd($documents);
         }
         dd($this->products);
     }

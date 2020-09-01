@@ -11,7 +11,7 @@ use GetCandy\Api\Core\Users\Actions\FetchUserAction;
 use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Action;
 
-class GetProductIndexDocumentAction extends Action
+class GetIndexDocumentAction extends Action
 {
     /**
      * Determine if the user is authorized to make this action.
@@ -23,7 +23,7 @@ class GetProductIndexDocumentAction extends Action
         if (app()->runningInConsole()) {
             return true;
         }
-        return $this->user()->can('index-products');
+        return $this->user()->can('index-records');
     }
 
     /**
@@ -34,7 +34,7 @@ class GetProductIndexDocumentAction extends Action
     public function rules()
     {
         return [
-            'product' => 'required',
+            'indexable' => 'required',
         ];
     }
 
@@ -45,7 +45,7 @@ class GetProductIndexDocumentAction extends Action
      */
     public function handle()
     {
-        dd($this->product);
+        return $this->indexable->getDocument();
     }
 
     /**
@@ -54,10 +54,10 @@ class GetProductIndexDocumentAction extends Action
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return mixed
      */
-    protected function getIndexables(Model $model)
+    protected function getIndexables()
     {
-        $attributes = $this->attributeMapping($model);
-
+        $attributes = $this->attributeMapping();
+        dd($attributes);
         $customerGroups = GetCandy::customerGroups()->all();
 
         $indexables = collect();
@@ -135,29 +135,5 @@ class GetProductIndexDocumentAction extends Action
         return $indexables;
     }
 
-    /**
-     * Gets the attribute mapping for a model to be indexed.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return array
-     */
-    public function attributeMapping(Model $model)
-    {
-        $mapping = [];
-        foreach ($model->attribute_data as $field => $channel) {
-            foreach ($channel as $channelName => $locales) {
-                foreach ($locales as $locale => $value) {
-                    $newValue = $model->attribute($field, $channelName, $locale);
-                    if (! is_array($newValue)) {
-                        $newValue = strip_tags($newValue);
-                    }
-                    if (! $this->mappingValueExists($mapping, $model->id, $locale, $field, $newValue)) {
-                        $mapping[$model->id][$locale]['data'][$field][] = $newValue;
-                    }
-                }
-            }
-        }
 
-        return $mapping;
-    }
 }
