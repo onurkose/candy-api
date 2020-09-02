@@ -1,12 +1,12 @@
 <?php
 
-namespace GetCandy\Api\Core\Collections\Resources\Collections;
+namespace GetCandy\Api\Core\Collections\Resources;
 
-use GetCandy\Api\Core\Channels\Resources\ChannelCollection;
 use GetCandy\Api\Http\Resources\AbstractResource;
 use GetCandy\Api\Http\Resources\Assets\AssetCollection;
 use GetCandy\Api\Http\Resources\Attributes\AttributeCollection;
 use GetCandy\Api\Http\Resources\Customers\CustomerGroupCollection;
+use GetCandy\Api\Core\Channels\Resources\ChannelCollection;
 use GetCandy\Api\Http\Resources\Products\ProductCollection;
 use GetCandy\Api\Http\Resources\Routes\RouteCollection;
 use GetCandy\Api\Http\Resources\Versioning\VersionCollection;

@@ -114,9 +114,10 @@
     $router->post('collections/{collection}/drafts', 'Collections\CollectionController@createDraft');
     $router->post('collections/{collection}/publish', 'Collections\CollectionController@publishDraft');
     $router->put('collections/{collection}/products', 'Collections\CollectionProductController@store');
-    $router->resource('collections', 'Collections\CollectionController', [
-        'except' => ['index', 'edit', 'create', 'show'],
-    ]);
+    $router->post('collections', '\GetCandy\Api\Core\Collections\Actions\CreateCollection');
+    // $router->resource('collections', 'Collections\CollectionController', [
+    //     'except' => ['index', 'edit', 'create', 'show'],
+    // ]);
 
     /*
      * Customers

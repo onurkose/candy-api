@@ -23,8 +23,12 @@ $router->get('/', function () {
 });
 
 $router->get('channels/{encoded_id}', '\GetCandy\Api\Core\Channels\Actions\FetchChannel');
-$router->get('collections', 'Collections\CollectionController@index');
-$router->get('collections/{id}', 'Collections\CollectionController@show');
+
+$router->get('collections', '\GetCandy\Api\Core\Collections\Actions\FetchCollections');
+$router->get('collections/{encoded_id}', '\GetCandy\Api\Core\Collections\Actions\FetchCollection');
+// $router->get('collections/{id}', 'Collections\CollectionController@show');
+
+
 $router->get('categories/{id}', 'Categories\CategoryController@show');
 $router->get('products/recommended', 'Products\ProductController@recommended');
 $router->get('products/{product}', 'Products\ProductController@show');

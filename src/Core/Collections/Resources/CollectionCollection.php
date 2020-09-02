@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Api\Core\Collections\Resources\Collections;
+namespace GetCandy\Api\Core\Collections\Resources;
 
 use GetCandy\Api\Http\Resources\AbstractCollection;
 
