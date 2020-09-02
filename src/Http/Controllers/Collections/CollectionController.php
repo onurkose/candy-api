@@ -30,52 +30,6 @@ class CollectionController extends BaseController
         $this->service = $service;
     }
 
-    /**
-     * Returns a listing of collections.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \GetCandy\Api\Core\Collections\Criteria\CollectionCriteria  $criteria
-     * @return \GetCandy\Api\Http\Resources\Collections\CollectionCollection
-     */
-    public function index(Request $request, CollectionCriteria $criteria)
-    {
-        $collection = $criteria->include($request->include)->limit(
-            $request->per_page
-        )->get();
-
-        return new CollectionCollection($collection);
-    }
-
-    /**
-     * Handles the request to show a collection based on it's hashed ID.
-     *
-     * @param  string  $id
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \GetCandy\Api\Core\Collections\Criteria\CollectionCriteria  $criteria
-     * @return array|\GetCandy\Api\Http\Resources\Collections\CollectionResource
-     */
-    public function show($id, Request $request, CollectionCriteria $criteria)
-    {
-        $id = (new Collection)->decodeId($id);
-
-        $includes = $request->include ?: [];
-
-        if ($includes && is_string($includes)) {
-            $includes = $this->parseIncludes($includes);
-        }
-
-        if (! $id) {
-            return $this->errorNotFound();
-        }
-
-        $collection = $this->service->findById($id, $includes, $request->draft);
-
-        if (! $collection) {
-            return $this->errorNotFound();
-        }
-
-        return new CollectionResource($collection);
-    }
 
     public function publishDraft($id, Request $request)
     {
@@ -94,18 +48,6 @@ class CollectionController extends BaseController
         return new CollectionResource($collection->load($includes));
     }
 
-    /**
-     * Handles the request to create a new collection.
-     *
-     * @param  \GetCandy\Api\Http\Requests\Collections\CreateRequest  $request
-     * @return \GetCandy\Api\Http\Resources\Collections\CollectionResource
-     */
-    public function store(CreateRequest $request)
-    {
-        $result = GetCandy::collections()->create($request->all());
-
-        return new CollectionResource($result);
-    }
 
     /**
      * Handles the request to update a collection.

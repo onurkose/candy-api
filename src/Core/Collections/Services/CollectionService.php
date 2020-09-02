@@ -67,7 +67,7 @@ class CollectionService extends BaseService
 
         $collection->routes()->createMany($urls);
 
-        // event(new AttributableSavedEvent($collection));
+        event(new AttributableSavedEvent($collection));
 
         return $collection;
     }

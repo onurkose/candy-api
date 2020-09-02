@@ -4,9 +4,10 @@ namespace GetCandy\Api\Core\Collections\Actions;
 
 use GetCandy\Api\Core\Channels\Models\Channel;
 use GetCandy\Api\Core\Scaffold\AbstractAction;
+use GetCandy\Api\Core\Routes\Actions\FetchRoute;
 use GetCandy\Api\Core\Traits\ReturnsJsonResponses;
 use GetCandy\Api\Core\Collections\Models\Collection;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use GetCandy\Api\Core\Customers\Actions\MapCustomerGroups;
 use GetCandy\Api\Core\Collections\Resources\CollectionResource;
 
 class CreateCollection extends AbstractAction
@@ -32,8 +33,23 @@ class CreateCollection extends AbstractAction
     {
         return [
             'name' => 'required|valid_structure:collections',
-            'url' => 'required',
+            'slug' => 'required|string',
+            'path' => 'nullable|string',
+            'customer_groups' => 'nullable|array'
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $existingRoute = FetchRoute::run([
+                'slug' => $this->slug,
+                'path' => $this->path,
+            ]);
+            if ($existingRoute) {
+                $validator->errors()->add('field', 'Slug and/or Path already exist');
+            }
+        });
     }
 
     /**
@@ -47,9 +63,20 @@ class CreateCollection extends AbstractAction
         $collection->attribute_data = $this->validated();
         $collection->save();
 
-        // $urls = $this->getUniqueUrl($data['url']);
+        $collection->routes()->create([
+            'slug' => $this->slug,
+            'path' => $this->path,
+        ]);
 
-        // $collection->routes()->createMany($urls);
+        $groups = $this->customer_groups ?? [];
+
+        // Create default attribute groups
+        MapCustomerGroups::run([
+            'use_defaults' => !count($groups),
+            'model' => $collection,
+            'groups' => $groups,
+        ]);
+
         return $collection;
     }
 
@@ -63,10 +90,6 @@ class CreateCollection extends AbstractAction
      */
     public function response($result, $request)
     {
-        if (! $result) {
-            return $this->errorNotFound();
-        }
-
         return new CollectionResource($result);
     }
 }
