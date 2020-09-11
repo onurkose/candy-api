@@ -49,6 +49,9 @@ abstract class AbstractScope implements Scope
      */
     protected function resolve(\Closure $callback)
     {
+        if (app()->runningInConsole()) {
+            return;
+        }
         if (
             ! $this->getUser()
             || ! $this->canAccessHub()

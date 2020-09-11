@@ -2,12 +2,14 @@
 
 namespace GetCandy\Api\Core\Search\Commands;
 
+use Ramsey\Uuid\Uuid;
 use Illuminate\Console\Command;
+use GetCandy\Api\Core\Search\SearchManager;
+use Illuminate\Contracts\Events\Dispatcher;
 use GetCandy\Api\Core\Search\SearchContract;
 use GetCandy\Api\Core\Products\Models\Product;
-use GetCandy\Api\Core\Categories\Models\Category;
 use GetCandy\Api\Core\Search\Jobs\ReindexSearchJob;
-use GetCandy\Api\Core\Search\Actions\IndexProductsAction;
+use GetCandy\Api\Core\Search\Actions\IndexDocuments;
 
 class IndexProductsCommand extends Command
 {
@@ -16,7 +18,7 @@ class IndexProductsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'candy:products:index {batchsize=1000} {--queue}';
+    protected $signature = 'candy:products:reindex {batchsize=1000} {--queue}';
 
     /**
      * The console command description.
@@ -40,34 +42,34 @@ class IndexProductsCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(Dispatcher $events, SearchManager $manager)
     {
         $batchsize = (int) $this->argument('batchsize');
         $total = Product::withoutGlobalScopes()->count();
 
         $this->output->text('Indexing ' . $total . ' products in ' . ceil($total / $batchsize) . ' batches');
-        $this->output->progressStart(ceil($total / $batchsize));
-        Product::withoutGlobalScopes()->chunk($batchsize, function ($products, $index) {
-            IndexProductsAction::run([
-                'products' => $products,
+
+        $batches = ceil($total / $batchsize);
+        $bar = $this->output->createProgressBar($batches);
+
+        $uuid = Uuid::uuid4()->toString();
+
+        Product::withoutGlobalScopes()->with([
+            'attributes',
+            'customerGroups',
+            'channels',
+            'variants.customerPricing',
+            'categories',
+        ])->chunk($batchsize, function ($products, $index) use ($manager, $uuid, $batches, $bar) {
+            IndexDocuments::run([
+                'driver' => $manager->with(
+                    config('getcandy.search.driver')
+                ),
+                'documents' => $products,
+                'uuid' => $uuid,
+                'final' => $batches === $index,
             ]);
-            dd(1);
-            tap($this->output)->progressAdvance();
+            $bar->advance();
         });
-        // $this->output->text('Indexing products');
-        //
-        // $search = app(SearchContract::class);
-
-        // foreach ($this->indexables as $indexable) {
-        //     $this->info('Indexing '.$indexable);
-        //     $model = new $indexable;
-        //     if ($this->option('queue')) {
-        //         ReindexSearchJob::dispatch($indexable);
-        //     } else {
-        //         $search->indexer()->reindex($model, config('getcandy.search.batch_size', 1000));
-        //     }
-        // }
-
-        // $this->info('Done!');
     }
 }
