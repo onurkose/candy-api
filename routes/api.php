@@ -120,15 +120,34 @@
     // ]);
 
     /*
+    * Countries
+    */
+    $router->put('countries/{encoded_id}', '\GetCandy\Api\Core\Countries\Actions\UpdateCountry');
+
+    /*
      * Customers
      */
-    $router->resource('customers/groups', 'Customers\CustomerGroupController', [
-        'except' => ['edit', 'create', 'show'],
-    ]);
 
-    $router->resource('customers', 'Customers\CustomerController', [
-        'except' => ['edit', 'create', 'store'],
-    ]);
+    $router->group([
+        'prefix' => 'customers',
+    ], function ($group) {
+        $group->get('/', '\GetCandy\Api\Core\Customers\Actions\FetchCustomers');
+        $group->post('{encoded_id}/users', '\GetCandy\Api\Core\Customers\Actions\AttachUserToCustomer');
+        $group->delete('{encoded_id}', '\GetCandy\Api\Core\Customers\Actions\DeleteCustomer');
+        $group->put('{encoded_id}/customer-groups', '\GetCandy\Api\Core\Customers\Actions\AttachCustomerToGroups');
+    });
+
+    /**
+     * Customer groups.
+     */
+    $router->group([
+        'prefix' => 'customer-groups',
+    ], function ($route) {
+        $route->get('/', '\GetCandy\Api\Core\Customers\Actions\FetchCustomerGroups');
+        $route->get('{encoded_id}', '\GetCandy\Api\Core\Customers\Actions\FetchCustomerGroup');
+        $route->delete('{encoded_id}', '\GetCandy\Api\Core\Customers\Actions\DeleteCustomerGroup');
+        $route->post('/', '\GetCandy\Api\Core\Customers\Actions\CreateCustomerGroup');
+    });
 
     /*
      * Discounts
@@ -138,11 +157,15 @@
     ]);
 
     /*
-     * Languages
-     */
-    $router->resource('languages', 'Languages\LanguageController', [
-        'except' => ['edit', 'create'],
-    ]);
+    * Languages
+    */
+    $router->group([
+        'prefix' => 'languages',
+    ], function ($group) {
+        $group->post('/', '\GetCandy\Api\Core\Languages\Actions\CreateLanguage');
+        $group->delete('{encoded_id}', '\GetCandy\Api\Core\Languages\Actions\DeleteLanguage');
+        $group->put('{encoded_id}', '\GetCandy\Api\Core\Languages\Actions\UpdateLanguage');
+    });
 
     /*
      * Layouts

@@ -14,12 +14,8 @@ use GetCandy\Api\Core\Baskets\Services\BasketService;
 use GetCandy\Api\Core\Baskets\Services\SavedBasketService;
 use GetCandy\Api\Core\Categories\Services\CategoryService;
 use GetCandy\Api\Core\Collections\Services\CollectionService;
-use GetCandy\Api\Core\Countries\Services\CountryService;
 use GetCandy\Api\Core\Currencies\Services\CurrencyService;
-use GetCandy\Api\Core\Customers\Services\CustomerGroupService;
-use GetCandy\Api\Core\Customers\Services\CustomerService;
 use GetCandy\Api\Core\Discounts\Services\DiscountService;
-use GetCandy\Api\Core\Languages\Services\LanguageService;
 use GetCandy\Api\Core\Layouts\Services\LayoutService;
 use GetCandy\Api\Core\Orders\Services\OrderService;
 use GetCandy\Api\Core\Pages\Services\PageService;
@@ -89,19 +85,9 @@ class Factory
     protected $categories;
 
     /**
-     * @var \GetCandy\Api\Core\Countries\Services\CountryService
-     */
-    protected $countries;
-
-    /**
      * @var \GetCandy\Api\Core\Currencies\Services\CurrencyService
      */
     protected $currencies;
-
-    /**
-     * @var \GetCandy\Api\Core\Customers\Services\CustomerService
-     */
-    protected $customers;
 
     /**
      * @var \GetCandy\Api\Core\Discounts\Services\DiscountService
@@ -112,11 +98,6 @@ class Factory
      * @var \GetCandy\Api\Core\Layouts\Services\LayoutService
      */
     protected $layouts;
-
-    /**
-     * @var \GetCandy\Api\Core\Languages\Services\LanguageService
-     */
-    protected $languages;
 
     /**
      * @var \GetCandy\Api\Core\Orders\Services\OrderService
@@ -229,11 +210,7 @@ class Factory
         CategoryService $categories,
         CollectionService $collections,
         CurrencyService $currencies,
-        CountryService $countries,
-        CustomerGroupService $customerGroups,
-        CustomerService $customers,
         DiscountService $discounts,
-        LanguageService $languages,
         LayoutService $layouts,
         OrderService $orders,
         PaymentTypeService $paymentTypes,
@@ -266,12 +243,8 @@ class Factory
         $this->baskets = $baskets;
         $this->categories = $categories;
         $this->collections = $collections;
-        $this->countries = $countries;
         $this->currencies = $currencies;
-        $this->customerGroups = $customerGroups;
-        $this->customers = $customers;
         $this->discounts = $discounts;
-        $this->languages = $languages;
         $this->layouts = $layouts;
         $this->orders = $orders;
         $this->pages = $pages;

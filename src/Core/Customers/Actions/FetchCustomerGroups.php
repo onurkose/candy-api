@@ -2,10 +2,9 @@
 
 namespace GetCandy\Api\Core\Customers\Actions;
 
-use GetCandy\Api\Core\Scaffold\AbstractAction;
-use GetCandy\Api\Core\Collections\Models\Collection;
 use GetCandy\Api\Core\Customers\Models\CustomerGroup;
-use GetCandy\Api\Core\Collections\Resources\CollectionCollection;
+use GetCandy\Api\Core\Customers\Resources\CustomerGroupCollection;
+use GetCandy\Api\Core\Scaffold\AbstractAction;
 
 class FetchCustomerGroups extends AbstractAction
 {
@@ -16,6 +15,8 @@ class FetchCustomerGroups extends AbstractAction
      */
     public function authorize()
     {
+        $this->paginate = $this->paginate === null ?: $this->paginate;
+
         return true;
     }
 
@@ -32,11 +33,6 @@ class FetchCustomerGroups extends AbstractAction
         ];
     }
 
-    public function afterValidator($validator)
-    {
-        $this->set('paginate', $this->paginate === null ?: $this->paginate);
-    }
-
     /**
      * Execute the action and return a result.
      *
@@ -50,7 +46,10 @@ class FetchCustomerGroups extends AbstractAction
             return CustomerGroup::with($includes)->get();
         }
 
-        return CustomerGroup::with($includes)->paginate($this->per_page ?? 50);
+        return CustomerGroup::with($includes)
+            ->withCount(
+                $this->resolveRelationCounts()
+            )->paginate($this->per_page ?? 50);
     }
 
     /**
@@ -59,7 +58,7 @@ class FetchCustomerGroups extends AbstractAction
      * @param   \GetCandy\Api\Core\Customers\Models\CustomerGroup|Illuminate\Pagination\LengthAwarePaginator  $result
      * @param   \Illuminate\Http\Request  $request
      *
-     * @return  CustomerGroupCollection
+     * @return  \GetCandy\Api\Core\Customers\Resources\CustomerGroupCollection
      */
     public function response($result, $request): CustomerGroupCollection
     {

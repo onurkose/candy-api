@@ -16,4 +16,11 @@ class CustomerGroupResource extends AbstractResource
             'purchasable' => $this->pivot->purchasable ?? false,
         ];
     }
+
+    public function includes()
+    {
+        return [
+            'customers' => new CustomerCollection($this->whenLoaded('customers')),
+        ];
+    }
 }
