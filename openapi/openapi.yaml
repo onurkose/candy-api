@@ -6,7 +6,7 @@ info:
     name: GetCandy
     url: 'https://getcandy.io'
     email: support@getcandy.io
-  version: '1.0'
+  version: 1.0.0
   license:
     name: MIT
   description: The GetCandy API
@@ -17,139 +17,31 @@ paths:
     $ref: './addresses/paths/addresses.yaml'
   '/addresses/{addressId}':
     $ref: './addresses/paths/addresses.id.yaml'
-
-### BELOW: Paths that have not been updated
-
   /channels:
-    get:
-      summary: Get all channels
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChannelCollection'
-      operationId: get-channels
-      parameters:
-        - schema:
-            type: string
-          in: query
-          name: includes
-          description: Comma separated includes for the resource
-        - schema:
-            type: number
-          in: query
-          name: per_page
-          description: How many results per page
-      description: Gets a paginated list of all channel
-      tags:
-        - Channels
-    post:
-      summary: Create a new channel
-      description: Create a new channel resource
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Channel'
-      operationId: post-channels
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/CreateChannelBody'
-            examples: {}
-        description: ''
-      tags:
-        - Channels
+    $ref: './channels/paths/channels.yaml'
   '/channels/{channelId}':
-    parameters:
-      - schema:
-          type: string
-        name: channelId
-        in: path
-        required: true
-    get:
-      summary: Get the channel resource
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChannelResponse'
-              examples:
-                example-1:
-                  value:
-                    data:
-                      id: y3g6v91o
-                      name: Webstore
-                      handle: webstore
-                      url: 'http://webstore.test'
-                      default: true
-                      published_at: null
-                    meta:
-                      lang: en
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      operationId: get-channels-channelId
-      description: ''
-      parameters:
-        - schema:
-            type: string
-          in: query
-          name: includes
-      tags:
-        - Channels
-    put:
-      summary: Update the channel resource
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChannelResponse'
-        '422':
-          description: Unprocessable Entity
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  handle:
-                    type: array
-                    items:
-                      type: string
-                  name:
-                    type: array
-                    items:
-                      type: string
-      operationId: put-channels-channelId
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UpdateChannelBody'
-        description: ''
-      tags:
-        - Channels
-    delete:
-      summary: Delete the channel resource
-      responses:
-        '204':
-          description: No Content
-      operationId: delete-channels-channelId
-      tags:
-        - Channels
-      description: ''
+    $ref: './channels/paths/channels.id.yaml'
+  /customers:
+    $ref: './customers/paths/customers.yaml'
+  '/customers/{customerId}/users':
+    $ref: './customers/paths/customers.id.users.yaml'
+  '/customers/{customerId}/customer-groups':
+    $ref: './customers/paths/customers.id.customer-groups.yaml'
+  '/customers/{customerId}':
+    $ref: './customers/paths/customers.id.yaml'
+  '/countries':
+    $ref: './countries/paths/countries.yaml'
+  '/countries/{countryId}':
+    $ref: './countries/paths/countries.id.yaml'
+  '/customer-groups':
+    $ref: './customer-groups/paths/customer-groups.yaml'
+  '/customer-groups/{customerGroupId}':
+    $ref: './customer-groups/paths/customer-groups.id.yaml'
+  /languages:
+    $ref: './languages/paths/languages.yaml'
+  '/languages/{languageId}':
+    $ref: './languages/paths/languages.id.yaml'
+### BELOW: Paths that have not been updated
   /orders:
     get:
       summary: Get orders
@@ -273,7 +165,7 @@ paths:
                   description: Corresponds to status set in config
                 send_emails:
                   type: boolean
-                  default: 0
+                  default: false
                   example: true
         description: ''
       parameters:
@@ -505,9 +397,8 @@ paths:
                   type: boolean
                   default: false
                 scopeable:
-                  type: integer
+                  type: boolean
                   default: false
-                  format: int32
                 translatable:
                   type: boolean
                   default: false
@@ -1899,25 +1790,6 @@ paths:
           description: No Content
       operationId: delete-collections-collectionId
       description: Delete a Collection by its ID
-  /customers/groups:
-    get:
-      summary: Get Customer Groups
-      tags:
-        - Customers
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CustomerGroupCollection'
-      operationId: get-customers-groups
-      description: Return a paginated CustomerGroup response
-      parameters:
-        - schema:
-            type: string
-          in: query
-          name: include
   '/orders/email-preview/{status}':
     parameters:
       - schema:
@@ -2162,196 +2034,6 @@ paths:
                 $ref: '#/components/schemas/Error'
       operationId: delete-discounts-discountId
       description: Deletes a Discount
-  /languages:
-    get:
-      summary: Get Languages
-      tags:
-        - Languages
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LanguageCollection'
-              examples:
-                full-example:
-                  value:
-                    data:
-                      - id: 6z8m9gmj
-                        name: English
-                        lang: en
-                        iso: gb
-                        default: true
-                        enabled: true
-                        current: false
-                    links:
-                      first: 'http://storefront.test/api/v1/languages?page=1'
-                      last: 'http://storfront.test/api/v1/languages?page=1'
-                      prev: null
-                      next: null
-                    meta:
-                      current_page: 1
-                      from: 1
-                      last_page: 1
-                      path: 'http://storefront.test/api/v1/languages'
-                      per_page: 15
-                      to: 1
-                      total: 1
-      operationId: get-languages
-      description: Returns a paginated list of Languages
-    post:
-      summary: Create Language
-      tags:
-        - Languages
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LanguageResponse'
-              examples:
-                create-response-example:
-                  value:
-                    data:
-                      id: 0pgekgw6
-                      name: Français
-                      lang: fr
-                      iso: FR
-                      default: false
-                      enabled: false
-                      current: false
-        '422':
-          description: Unprocessable Entity
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  name:
-                    type: array
-                    items:
-                      type: string
-                  lang:
-                    type: array
-                    items:
-                      type: string
-                  iso:
-                    type: array
-                    items:
-                      type: string
-              examples:
-                unprocessable-example:
-                  value:
-                    name:
-                      - The name field is required.
-                    lang:
-                      - The lang field is required.
-                    iso:
-                      - The iso field is required.
-                      - The iso has already been taken.
-      operationId: post-languages
-      description: Create a new language
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                lang:
-                  type: string
-                iso:
-                  type: string
-                  description: Unique
-                enabled:
-                  type: boolean
-                default:
-                  type: boolean
-                current:
-                  type: boolean
-              required:
-                - name
-                - lang
-                - iso
-            examples:
-              minimal-create-example:
-                value:
-                  name: Français
-                  lang: fr
-                  iso: FR
-  '/languages/{languageId}':
-    parameters:
-      - schema:
-          type: string
-        name: languageId
-        in: path
-        required: true
-    get:
-      summary: Get Language
-      tags:
-        - Languages
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LanguageResponse'
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      operationId: get-languages-languageId
-      description: Get a Language by ID
-    put:
-      summary: Update Language
-      tags:
-        - Languages
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LanguageResponse'
-              examples:
-                language-example:
-                  value:
-                    data:
-                      id: 6z8m9gmj
-                      name: English
-                      lang: en
-                      iso: gb
-                      default: true
-                      enabled: true
-                      current: false
-      operationId: put-languages-languageId
-      description: "Update a Language using it's ID"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Language'
-    delete:
-      summary: Delete Language
-      tags:
-        - Languages
-      responses:
-        '204':
-          description: No Content
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      operationId: delete-languages-languageId
-      description: Delete a Language by its ID
   /layouts:
     get:
       summary: Get Layouts
@@ -5964,69 +5646,6 @@ paths:
       description: Returns a list of available Payment Types in the system
 components:
   schemas:
-    Channel:
-      title: Channel
-      description: |-
-        ## Available includes
-
-        - products
-        - categories
-        - collections
-        - discounts
-        - shippingMethods
-      x-examples:
-        webstore:
-          id: y3g6v91o
-          name: Webstore
-          handle: webstore
-          url: 'https://storefront.test'
-          default: true
-      properties:
-        id:
-          type: string
-          example: y3g6v91o
-        name:
-          type: string
-          example: Webstore
-        handle:
-          type: string
-          example: webstore
-        url:
-          type: string
-          format: uri
-          example: "https:\\/\\/storefront.test"
-        default:
-          type: boolean
-          default: false
-          example: true
-      x-tags:
-        - channel
-      type: object
-    Pagination:
-      title: Pagination
-      type: object
-      properties:
-        current_page:
-          type: integer
-          default: 1
-          format: int32
-          example: 1
-        from:
-          type: integer
-          example: 24
-        last_page:
-          type: integer
-          default: 15
-          example: 15
-        path:
-          type: string
-        per_page:
-          type: integer
-          example: 1
-        to:
-          type: integer
-        total:
-          type: integer
     Error:
       title: Error
       type: object
@@ -6578,7 +6197,7 @@ components:
         children:
           $ref: '#/components/schemas/CategoryCollection'
         channels:
-          $ref: '#/components/schemas/ChannelCollection'
+          $ref: './channels/responses/ChannelCollection.yaml'
         ancestors:
           $ref: '#/components/schemas/CategoryCollection'
         routes:
@@ -6592,7 +6211,7 @@ components:
         attributes:
           $ref: '#/components/schemas/AttributeCollection'
         customer_groups:
-          $ref: '#/components/schemas/CustomerGroupCollection'
+          $ref: './customer-groups/responses/CustomerGroupCollection.yaml'
         products:
           $ref: '#/components/schemas/ProductCollection'
     AttributeGroup:
@@ -6713,7 +6332,7 @@ components:
         layout:
           $ref: '#/components/schemas/LayoutResponse'
         channels:
-          $ref: '#/components/schemas/ChannelCollection'
+          $ref: './channels/responses/ChannelCollection.yaml'
         assets:
           $ref: '#/components/schemas/AssetCollection'
         attributes:
@@ -6721,28 +6340,7 @@ components:
         products:
           $ref: '#/components/schemas/ProductCollection'
         customer_groups:
-          $ref: '#/components/schemas/CustomerGroupCollection'
-    CustomerGroup:
-      title: CustomerGroup
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        handle:
-          type: string
-        visible:
-          type: string
-        purchasable:
-          type: boolean
-      x-examples:
-        full-example:
-          id: v8l4pl01
-          name: Retail
-          handle: retail
-          visible: false
-          purchasable: false
+          $ref: './customer-groups/responses/CustomerGroupCollection.yaml'
     Discount:
       title: Discount
       type: object
@@ -6965,7 +6563,7 @@ components:
             routes:
               $ref: '#/components/schemas/RouteCollection'
             channels:
-              $ref: '#/components/schemas/ChannelCollection'
+              $ref: './channels/responses/ChannelCollection.yaml'
             first_variant:
               $ref: '#/components/schemas/ProductVariantResponse'
             primary_asset:
@@ -6983,7 +6581,7 @@ components:
             versions:
               $ref: '#/components/schemas/VersionCollection'
             customer_groups:
-              $ref: '#/components/schemas/CustomerGroupCollection'
+              $ref: './customer-groups/responses/CustomerGroupCollection.yaml'
             attributes:
               $ref: '#/components/schemas/AttributeCollection'
             layout:
@@ -7281,29 +6879,12 @@ components:
           type: string
         recyclable:
           type: object
-    ChannelResponse:
-      title: ChannelResponse
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/Channel'
-    ChannelCollection:
-      title: ChannelCollection
-      allOf:
-        - type: object
-          properties:
-            data:
-              type: array
-              items:
-                $ref: '#/components/schemas/Channel'
-        - $ref: '#/components/schemas/Pagination'
-      description: ''
     PaginatedResponse:
       title: PaginatedResponse
       type: object
       properties:
         meta:
-          $ref: '#/components/schemas/Pagination'
+          $ref: './global/models/Pagination.yaml'
         links:
           $ref: '#/components/schemas/Links'
     AssetResponse:
@@ -7433,17 +7014,7 @@ components:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/CustomerGroup'
-    CustomerGroupCollection:
-      title: CustomerGroupCollection
-      allOf:
-        - type: object
-          properties:
-            data:
-              type: array
-              items:
-                $ref: '#/components/schemas/CustomerGroup'
-        - $ref: '#/components/schemas/PaginatedResponse'
+          $ref: './customer-groups/models/CustomerGroup.yaml'
     AddressResponse:
       title: AddressResponse
       type: object
@@ -7936,7 +7507,7 @@ components:
             $ref: '#/components/schemas/Search'
         meta:
           allOf:
-            - $ref: '#/components/schemas/Pagination'
+            - $ref: './global/models/Pagination.yaml'
             - type: object
               properties:
                 aggregation:
@@ -8123,16 +7694,8 @@ components:
       properties:
         quantity:
           type: integer
-    CreateChannelBody:
-      title: CreateChannelBody
-      type: object
-      properties:
-        handle:
-          type: string
-        name:
-          type: string
     UpdateChannelBody:
-      $ref: '#/components/schemas/CreateChannelBody'
+      $ref: './channels/requests/CreateChannelBody.yaml'
     CreateCategoryBody:
       title: CreateCategoryBody
       type: object

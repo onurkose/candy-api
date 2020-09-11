@@ -3,6 +3,9 @@
 namespace GetCandy\Api\Core\Users\Services;
 
 use GetCandy;
+use GetCandy\Api\Core\Customers\Actions\FetchDefaultCustomerGroup;
+use GetCandy\Api\Core\Customers\Models\CustomerGroup;
+use GetCandy\Api\Core\Foundation\Actions\DecodeIds;
 use GetCandy\Api\Core\Payments\Models\ReusablePayment;
 use GetCandy\Api\Core\Scaffold\BaseService;
 use GetCandy\Api\Core\Users\Contracts\UserContract;
@@ -57,11 +60,11 @@ class UserService extends BaseService implements UserContract
      */
     public function getPaginatedData($length = 50, $page = null, $keywords = null, $ids = [])
     {
-        $query = $this->model->with(['details']);
+        $query = $this->model->with(['customer']);
         if ($keywords) {
             $keywords = explode(' ', $keywords);
             foreach ($keywords as $keyword) {
-                $query = $query->whereHas('details', function ($q) use ($keyword) {
+                $query = $query->whereHas('customer', function ($q) use ($keyword) {
                     $q->where('firstname', 'LIKE', '%'.$keyword.'%')
                         ->orWhere('lastname', 'LIKE', '%'.$keyword.'%')
                         ->orWhere('company_name', 'LIKE', '%'.$keyword.'%')
@@ -114,10 +117,13 @@ class UserService extends BaseService implements UserContract
         }
 
         if (! empty($data['customer_groups'])) {
-            $groupData = GetCandy::customerGroups()->getDecodedIds($data['customer_groups']);
+            $groupData = DecodeIds::run([
+                'model' => CustomerGroup::class,
+                'encoded_ids' => $data['customer_groups'],
+            ]);
             $user->groups()->sync($groupData);
         } else {
-            $default = GetCandy::customerGroups()->getDefaultRecord();
+            $default = FetchDefaultCustomerGroup::run();
             $user->groups()->attach($default);
         }
 
@@ -171,10 +177,13 @@ class UserService extends BaseService implements UserContract
         }
 
         if (! empty($data['customer_groups'])) {
-            $groupData = GetCandy::customerGroups()->getDecodedIds($data['customer_groups']);
+            $groupData = DecodeIds::run([
+                'model' => CustomerGroup::class,
+                'encoded_ids' => $data['customer_groups'],
+            ]);
             $user->groups()->sync($groupData);
         } else {
-            $default = GetCandy::customerGroups()->getDefaultRecord();
+            $default = FetchDefaultCustomerGroup::run();
             $user->groups()->attach($default);
         }
 

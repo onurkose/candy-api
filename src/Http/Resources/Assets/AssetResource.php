@@ -4,6 +4,7 @@ namespace GetCandy\Api\Http\Resources\Assets;
 
 use GetCandy\Api\Http\Resources\AbstractResource;
 use GetCandy\Api\Http\Resources\Tags\TagCollection;
+use Storage;
 
 class AssetResource extends AbstractResource
 {

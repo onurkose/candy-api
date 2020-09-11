@@ -11,26 +11,34 @@
 */
 
 $router->get('/', function () {
-    $channel = app()->make(GetCandy\Api\Core\Channels\Interfaces\ChannelFactoryInterface::class);
     $currency = app()->make(GetCandy\Api\Core\Currencies\Interfaces\CurrencyConverterInterface::class);
 
     return response()->json([
         'version' => GetCandy::version(),
         'locale' => app()->getLocale(),
-        'channel' => new GetCandy\Api\Http\Resources\Channels\ChannelResource($channel->getChannel()),
+        'channel' => GetCandy\Api\Core\Channels\Actions\FetchCurrentChannel::run(),
         'currency' => new GetCandy\Api\Http\Resources\Currencies\CurrencyResource($currency->get()),
     ]);
 });
 
-// $router->get('channels', 'Channels\ChannelController@index');
-$router->get('channels/{id}', 'Channels\ChannelController@show');
+$router->get('channels/{encoded_id}', '\GetCandy\Api\Core\Channels\Actions\FetchChannel');
 $router->get('collections', 'Collections\CollectionController@index');
 $router->get('collections/{id}', 'Collections\CollectionController@show');
 $router->get('categories/{id}', 'Categories\CategoryController@show');
 $router->get('products/recommended', 'Products\ProductController@recommended');
 $router->get('products/{product}', 'Products\ProductController@show');
-$router->post('customers', 'Customers\CustomerController@store');
 $router->get('products', 'Products\ProductController@index');
+
+/*
+* Customers
+*/
+$router->group([
+    'prefix' => 'customers',
+], function ($group) {
+    $group->get('{encoded_id}', '\GetCandy\Api\Core\Customers\Actions\FetchCustomer');
+    $group->put('{encoded_id}', '\GetCandy\Api\Core\Customers\Actions\UpdateCustomer');
+    $group->post('/', '\GetCandy\Api\Core\Customers\Actions\CreateCustomer');
+});
 
 /*
     * Baskets
@@ -61,22 +69,25 @@ $router->get('categories', 'Categories\CategoryController@index');
 $router->get('categories/{category}/children', 'Categories\CategoryController@children');
 
 /*
-    * Countries
-    */
-$router->get('countries', 'Countries\CountryController@index');
+* Countries
+*/
+$router->get('countries', '\GetCandy\Api\Core\Countries\Actions\FetchCountries');
+
+/*
+* Languages
+*/
+$router->group([
+    'prefix' => 'languages',
+], function ($group) {
+    $group->get('/', '\GetCandy\Api\Core\Languages\Actions\FetchLanguages');
+    $group->get('/{encoded_id}', '\GetCandy\Api\Core\Languages\Actions\FetchLanguage');
+});
 
 /*
     * Currencies
     */
 $router->resource('currencies', 'Currencies\CurrencyController', [
     'except' => ['edit', 'create'],
-]);
-
-/*
-    * Customers
-    */
-$router->resource('customers', 'Customers\CustomerController', [
-    'except' => ['index', 'edit', 'create', 'show'],
 ]);
 
 /*
