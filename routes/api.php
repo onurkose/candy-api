@@ -250,16 +250,26 @@
     /*
      * Product families
      */
-    $router->resource('product-families', 'Products\ProductFamilyController', [
-        'except' => ['edit', 'create'],
-    ]);
+    $router->group([
+        'prefix' => 'product-families',
+    ], function ($group) {
+        $group->get('/', '\GetCandy\Api\Core\Products\Actions\FetchProductFamilies');
+        $group->get('{encoded_id}', '\GetCandy\Api\Core\Products\Actions\FetchProductFamily');
+        $group->put('{encoded_id}', '\GetCandy\Api\Core\Products\Actions\UpdateProductFamily');
+        $group->delete('{encoded_id}', '\GetCandy\Api\Core\Products\Actions\DeleteProductFamily');
+        $group->post('/', '\GetCandy\Api\Core\Products\Actions\CreateProductFamily');
+    });
 
     /*
      * Routes
      */
-    $router->resource('routes', 'Routes\RouteController', [
-        'except' => ['index', 'show', 'edit', 'create'],
-    ]);
+    $router->group([
+        'prefix' => 'routes',
+    ], function ($route) {
+        $route->get('/', '\GetCandy\Api\Core\Routes\Actions\FetchRoutes');
+        $route->delete('{encoded_id}', '\GetCandy\Api\Core\Routes\Actions\DeleteRoute');
+        $route->put('{encoded_id}', '\GetCandy\Api\Core\Routes\Actions\UpdateRoute');
+    });
 
     /*
      * Saved search

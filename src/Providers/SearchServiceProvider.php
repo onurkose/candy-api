@@ -3,8 +3,6 @@
 namespace GetCandy\Api\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use GetCandy\Api\Core\Search\SearchContract;
-use GetCandy\Api\Core\Search\Services\SavedSearchService;
 use GetCandy\Api\Core\Search\Commands\IndexProductsCommand;
 
 class SearchServiceProvider extends ServiceProvider

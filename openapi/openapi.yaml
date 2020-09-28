@@ -41,6 +41,16 @@ paths:
     $ref: './languages/paths/languages.yaml'
   '/languages/{languageId}':
     $ref: './languages/paths/languages.id.yaml'
+  /routes:
+    $ref: './routes/paths/routes.yaml'
+  '/routes/{routeId}':
+    $ref: './routes/paths/routes.id.yaml'
+  '/routes/search':
+    $ref: './routes/paths/routes.search.yaml'
+  /product-families:
+    $ref: './product-families/paths/product-families.yaml'
+  '/product-families/{productFamilyId}':
+    $ref: './product-families/paths/product-families.id.yaml'
 ### BELOW: Paths that have not been updated
   /orders:
     get:
@@ -4005,129 +4015,6 @@ paths:
             type: string
           in: query
           name: include
-  /product-families:
-    get:
-      summary: Get product families
-      tags:
-        - Product Families
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductFamilyCollection'
-      operationId: get-product-families
-      description: Returns a paginated list of all product families.
-      parameters:
-        - schema:
-            type: string
-          in: query
-          name: includes
-          description: Define included relationships
-    post:
-      summary: Create product family
-      tags:
-        - Product Families
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductFamilyResponse'
-        '422':
-          description: Unprocessable Entity
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  name:
-                    type: array
-                    items:
-                      type: string
-              examples:
-                unprocessable-example:
-                  value:
-                    name:
-                      - The name field is required.
-                      - The name field must be unique
-      operationId: post-product-families
-      description: Create a new product family.
-  '/product-families/{productFamilyId}':
-    parameters:
-      - schema:
-          type: string
-        name: productFamilyId
-        in: path
-        required: true
-    get:
-      summary: Get a product family
-      tags:
-        - Product Families
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductFamilyResponse'
-        '204':
-          description: No Content
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      operationId: get-product-families-productFamilyId
-      description: Returns a single product family based on ID.
-      parameters:
-        - schema:
-            type: string
-          in: query
-          name: includes
-    put:
-      summary: Update product family
-      tags:
-        - Product Families
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductFamilyResponse'
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      operationId: put-product-families-productFamilyId
-      description: Update a product family
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-    delete:
-      summary: Delete product family
-      tags:
-        - Product Families
-      responses:
-        '204':
-          description: No Content
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      operationId: delete-product-families-productFamilyId
-      description: Sends a request to delete a product family
   /saved-searches/product:
     get:
       summary: Get saved searches
@@ -4205,51 +4092,6 @@ paths:
                 $ref: '#/components/schemas/Error'
       operationId: get-settings-handle
       description: Get specific settings.
-  /routes:
-    get:
-      summary: Get routes
-      tags:
-        - Routes
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RouteCollection'
-      operationId: get-routes
-      description: Returns paginated list of routes.
-  '/routes/{slug}':
-    parameters:
-      - schema:
-          type: string
-        name: slug
-        in: path
-        required: true
-    get:
-      summary: Get route
-      tags:
-        - Routes
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RouteResponse'
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Links'
-      operationId: get-routes-slug
-      description: "Retrieve a route by it's slug."
-      parameters:
-        - schema:
-            type: string
-          in: query
-          name: include
   /shipping/zones:
     get:
       summary: Get Shipping Zones
@@ -6201,7 +6043,7 @@ components:
         ancestors:
           $ref: '#/components/schemas/CategoryCollection'
         routes:
-          $ref: '#/components/schemas/RouteCollection'
+          $ref: './routes/responses/RouteCollection.yaml'
         layout:
           $ref: '#/components/schemas/LayoutResponse'
         assets:
@@ -6328,7 +6170,7 @@ components:
         attribute_data:
           type: object
         routes:
-          $ref: '#/components/schemas/RouteCollection'
+          $ref: './routes/responses/RouteCollection.yaml'
         layout:
           $ref: '#/components/schemas/LayoutResponse'
         channels:
@@ -6553,7 +6395,7 @@ components:
             updated_at:
               type: string
             family:
-              $ref: '#/components/schemas/ProductFamilyResponse'
+              $ref: './product-families/responses/ProductFamilyResponse.yaml'
             draft:
               $ref: '#/components/schemas/ProductResponse'
             published_parent:
@@ -6561,7 +6403,7 @@ components:
             assets:
               $ref: '#/components/schemas/AssetCollection'
             routes:
-              $ref: '#/components/schemas/RouteCollection'
+              $ref: './routes/responses/RouteCollection.yaml'
             channels:
               $ref: './channels/responses/ChannelCollection.yaml'
             first_variant:
@@ -6703,48 +6545,6 @@ components:
           $ref: '#/components/schemas/ProductTierPriceCollection'
         options:
           type: object
-    Route:
-      title: Route
-      type: object
-      properties:
-        id:
-          type: string
-        default:
-          type: boolean
-        redirect:
-          type: boolean
-        locale:
-          type: string
-        path:
-          type: string
-        slug:
-          type: string
-        description:
-          type: string
-        type:
-          type: string
-        element:
-          type: object
-          properties:
-            data:
-              type: object
-              properties:
-                id:
-                  type: string
-    ProductFamily:
-      title: ProductFamily
-      type: object
-      x-examples:
-        product-family-example:
-          id: vp5eyzdj
-          name: Timco Stainless Steel Woodscrews
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        attributes:
-          $ref: '#/components/schemas/AttributeCollection'
     SavedSearch:
       title: SavedSearch
       type: object
@@ -7140,22 +6940,6 @@ components:
               items:
                 $ref: '#/components/schemas/Permission'
         - $ref: '#/components/schemas/PaginatedResponse'
-    ProductFamilyCollection:
-      title: ProductFamilyCollection
-      allOf:
-        - type: object
-          properties:
-            data:
-              type: array
-              items:
-                $ref: '#/components/schemas/ProductFamily'
-        - $ref: '#/components/schemas/PaginatedResponse'
-    ProductFamilyResponse:
-      title: ProductFamilyResponse
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/ProductFamily'
     ProductRecommendationCollection:
       title: ProductRecommendationCollection
       allOf:
@@ -7213,22 +6997,6 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Role'
-        - $ref: '#/components/schemas/PaginatedResponse'
-    RouteResponse:
-      title: RouteResponse
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/Route'
-    RouteCollection:
-      title: RouteCollection
-      allOf:
-        - type: object
-          properties:
-            data:
-              type: array
-              items:
-                $ref: '#/components/schemas/Route'
         - $ref: '#/components/schemas/PaginatedResponse'
     SavedBasketResponse:
       title: SavedBasketResponse
@@ -7826,8 +7594,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Asset'
-    ProductFamilyInclude:
-      $ref: '#/components/schemas/ProductFamilyResponse'
     AssetsInclude:
       title: AssetsInclude
       type: object
