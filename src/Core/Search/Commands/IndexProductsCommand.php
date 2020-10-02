@@ -60,14 +60,15 @@ class IndexProductsCommand extends Command
             'channels',
             'variants.customerPricing',
             'categories',
-        ])->chunk($batchsize, function ($products, $index) use ($manager, $uuid, $batches, $bar) {
+        ])->chunk($batchsize, function ($products, $index) use ($manager, $uuid, $batches, $bar, $events) {
+            dump((int) $batches, $index, $batches === $index);
             IndexDocuments::run([
                 'driver' => $manager->with(
                     config('getcandy.search.driver')
                 ),
                 'documents' => $products,
                 'uuid' => $uuid,
-                'final' => $batches === $index,
+                'final' => (int) $batches === $index,
             ]);
             $bar->advance();
         });

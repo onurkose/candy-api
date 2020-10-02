@@ -16,10 +16,7 @@ class FetchIndex extends Action
      */
     public function authorize()
     {
-        if (app()->runningInConsole()) {
-            return true;
-        }
-        return $this->user()->can('index-documents');
+        return true;
     }
 
     /**
@@ -45,7 +42,6 @@ class FetchIndex extends Action
     {
         $indexes = [];
         $prefix = config('getcandy.search.index_prefix', 'getcandy');
-
         foreach ($this->languages as $language) {
 
             $index = $client->getIndex(

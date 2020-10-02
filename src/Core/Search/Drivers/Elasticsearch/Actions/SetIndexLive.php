@@ -43,6 +43,7 @@ class SetIndexLive extends Action
      */
     public function handle(Client $client)
     {
+        dump('Setting live');
         // Indexes
         // $languages = FetchLanguages::run([
         //     'paginate' => false,

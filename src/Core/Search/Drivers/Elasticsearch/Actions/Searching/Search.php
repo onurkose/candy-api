@@ -1,0 +1,139 @@
+<?php
+
+namespace GetCandy\Api\Core\Search\Drivers\Elasticsearch\Actions\Searching;
+
+use Elastica\Query;
+use Elastica\Query\BoolQuery;
+use Lorisleiva\Actions\Action;
+use Elastica\Search as ElasticaSearch;
+
+class Search extends Action
+{
+    /**
+     * Determine if the user is authorized to make this action.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the action.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            'index' => 'nullable|string',
+            'limit' => 'nullable|numeric',
+            'offset' => 'nullable|numeric',
+            'type' => 'required',
+            'facets' => 'nullable|array',
+            'aggregates' => 'nullable|array',
+            'term' => 'nullable|string',
+            'language' => 'required|string',
+        ];
+    }
+
+    /**
+     * Execute the action and return a result.
+     *
+     */
+    public function handle()
+    {
+        $client = FetchClient::run();
+
+        $term = $this->term ? $this->delegateTo(FetchTerm::class) : null;
+
+        $query = new Query();
+        $query->setParam('size', $this->limit ?: 100);
+        $query->setParam('from', $this->offset ?: 0);
+
+        $boolQuery = new BoolQuery;
+
+        if ($term) {
+            $boolQuery->addMust($term);
+            // $query->setSuggest(
+            //     $this->getSuggest()
+            // );
+        }
+
+        // $query->setSource(
+        //     $this->getExcludedFields()
+        // );
+
+        // // Set filters as post filters
+        // $postFilter = new BoolQuery;
+
+        // $preFilters = $this->filters->filter(function ($filter) {
+        //     return in_array($filter['handle'], $this->topFilters);
+        // });
+
+        // $preFilters->each(function ($filter) use ($boolQuery) {
+        //     $boolQuery->addFilter(
+        //         $filter['filter']->getQuery()
+        //     );
+        // });
+
+        // $postFilters = $this->filters->filter(function ($filter) {
+        //     return ! in_array($filter['handle'], $this->topFilters);
+        // });
+
+        // $postFilters->each(function ($filter) use ($postFilter, $query) {
+        //     if (method_exists($filter['filter'], 'aggregate')) {
+        //         $query->addAggregation(
+        //             $filter['filter']->aggregate()->getPost(
+        //                 $filter['filter']->getValue()
+        //             )
+        //         );
+        //     }
+        //     $postFilter->addFilter(
+        //         $filter['filter']->getQuery()
+        //     );
+        // });
+
+        // $query->setPostFilter($postFilter);
+
+        // // $globalAggregation = new \Elastica\Aggregation\GlobalAggregation('all_products');
+        // foreach ($this->aggregations as $agg) {
+        //     if (method_exists($agg, 'get')) {
+        //         $query->addAggregation(
+        //             $agg->addFilters($postFilters)->get($postFilters)
+        //         );
+        //         // $globalAggregation->addAggregation(
+        //             // $agg->addFilters($postFilters)->get($postFilters)
+        //         // );
+        //     }
+        // }
+
+        // $query->setQuery($boolQuery);
+
+        // $query->setHighlight(
+        //     $this->highlight()
+        // );
+
+        // foreach ($this->sorts as $sort) {
+        //     $query->addSort($sort->getMapping(
+        //         $this->user
+        //     ));
+        // }
+
+        $search = new ElasticaSearch($client);
+
+        $results = $search
+            ->addIndex(
+                $this->index ?: config('getcandy.search.index')
+            )
+            ->setOption(
+                ElasticaSearch::OPTION_SEARCH_TYPE,
+                ElasticaSearch::OPTION_SEARCH_TYPE_DFS_QUERY_THEN_FETCH
+            )->search($query);
+
+        $data = collect();
+
+        dd($results->getResults());
+    }
+}

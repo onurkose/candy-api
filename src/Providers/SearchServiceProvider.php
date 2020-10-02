@@ -15,10 +15,6 @@ class SearchServiceProvider extends ServiceProvider
             return new SearchManager($app);
         });
 
-        // $this->app->bind('getcandy.saved_search', function ($app) {
-        //     return $app->make(SavedSearchService::class);
-        // });
-
         if ($this->app->runningInConsole()) {
             $this->commands([
                 IndexProductsCommand::class

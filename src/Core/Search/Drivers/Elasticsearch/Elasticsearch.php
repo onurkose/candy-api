@@ -2,17 +2,20 @@
 
 namespace GetCandy\Api\Core\Search\Drivers\Elasticsearch;
 
+use Elastica\Client;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Contracts\Container\Container;
 use GetCandy\Api\Core\Products\Models\Product;
 use GetCandy\Api\Core\Search\Drivers\AbstractSearchDriver;
 use GetCandy\Api\Core\Search\Drivers\Elasticsearch\Actions\SetIndexLive;
 use GetCandy\Api\Core\Search\Drivers\Elasticsearch\Actions\IndexProducts;
+use GetCandy\Api\Core\Search\Drivers\Elasticsearch\Actions\Searching\Search;
 use GetCandy\Api\Core\Search\Drivers\Elasticsearch\Events\IndexingCompleteEvent;
 
 class Elasticsearch extends AbstractSearchDriver
 {
-    public function __construct(Dispatcher $events)
+    public function __construct(Dispatcher $events, Container $container)
     {
         $events->listen(IndexingCompleteEvent::class, function ($event) {
             SetIndexLive::run([
@@ -40,13 +43,12 @@ class Elasticsearch extends AbstractSearchDriver
 
     public function search(Request $request)
     {
-        $parseTree = (new \BasicQueryFilter\Parser)->parse($request->filter);
-
-        dd($parseTree);
         return Search::run([
             'type' => $request->type ?: 'products',
             'facets' => $request->filters ?: [],
             'aggregates' => $request->aggregates ?: [],
+            'term' => $request->term,
+            'language' => $request->language ?: app()->getLocale(),
         ]);
     }
 

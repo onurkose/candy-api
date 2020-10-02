@@ -67,6 +67,7 @@ class IndexProducts extends Action
             'uuid' => $this->uuid,
         ]);
 
+
         $documents = [];
 
         foreach ($this->products as $product) {
