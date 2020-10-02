@@ -29,10 +29,8 @@ class AbstractDocumentAction extends Action
                 $indexable->setLang($lang);
 
                 $categories = $this->getCategories($model);
-                $indexable->set('departments', $categories->toArray());
-                $indexable->set('customer_groups', $this->getCustomerGroups($model));
-                $indexable->set('channels', $this->getChannels($model));
-                $indexable->set('breadcrumbs', $categories->implode('name', ' | '));
+                $indexable->set('id', $model->encoded_id);
+
 
                 $groupPricing = [];
 
@@ -84,7 +82,10 @@ class AbstractDocumentAction extends Action
                     }
                     $indexable->set('sku', $skus);
                 }
-
+                $indexable->set('departments', $categories->toArray());
+                $indexable->set('customer_groups', $this->getCustomerGroups($model));
+                $indexable->set('channels', $this->getChannels($model));
+                $indexable->set('breadcrumbs', $categories->implode('name', ' | '));
                 $indexables->push($indexable);
             }
         }

@@ -18,15 +18,15 @@ class ChannelScope extends AbstractScope
     public function apply(Builder $builder, Model $model)
     {
         $channel = app()->getInstance()->make(ChannelFactoryInterface::class);
-        $this->resolve(function () use ($builder, $channel) {
-            $model = $builder->getModel();
-            $relation = $model->channels();
-            $builder->addSelect("{$model->getTable()}.*")->join($relation->getTable(), function ($join) use ($relation, $model, $channel) {
-                $join->on("{$model->getTable()}.id", '=', $relation->getExistenceCompareKey())
-                ->where("{$relation->getTable()}.channel_id", $channel->getChannel()->id)
-                ->whereDate("{$relation->getTable()}.published_at", '<=', now());
-            })->groupBy($relation->getExistenceCompareKey());
-        });
+        // $this->resolve(function () use ($builder, $channel) {
+        //     $model = $builder->getModel();
+        //     $relation = $model->channels();
+        //     $builder->addSelect("{$model->getTable()}.*")->join($relation->getTable(), function ($join) use ($relation, $model, $channel) {
+        //         $join->on("{$model->getTable()}.id", '=', $relation->getExistenceCompareKey())
+        //         ->where("{$relation->getTable()}.channel_id", $channel->getChannel()->id)
+        //         ->whereDate("{$relation->getTable()}.published_at", '<=', now());
+        //     })->groupBy($relation->getExistenceCompareKey());
+        // });
     }
 
     /**

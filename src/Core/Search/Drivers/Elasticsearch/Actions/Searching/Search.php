@@ -6,6 +6,12 @@ use Elastica\Query;
 use Elastica\Query\BoolQuery;
 use Lorisleiva\Actions\Action;
 use Elastica\Search as ElasticaSearch;
+use GetCandy\Api\Core\Products\Models\Product;
+use Illuminate\Pagination\LengthAwarePaginator;
+use GetCandy\Api\Core\Categories\Models\Category;
+use GetCandy\Api\Core\Search\Actions\FetchSearchedIds;
+use GetCandy\Api\Http\Resources\Products\ProductCollection;
+use GetCandy\Api\Http\Resources\Categories\CategoryCollection;
 
 class Search extends Action
 {
@@ -30,11 +36,12 @@ class Search extends Action
             'index' => 'nullable|string',
             'limit' => 'nullable|numeric',
             'offset' => 'nullable|numeric',
-            'type' => 'required',
+            'type' => 'nullable|string',
             'facets' => 'nullable|array',
             'aggregates' => 'nullable|array',
             'term' => 'nullable|string',
-            'language' => 'required|string',
+            'language' => 'nullable|string',
+            'page' => 'nullable|numeric|min:1'
         ];
     }
 
@@ -44,9 +51,14 @@ class Search extends Action
      */
     public function handle()
     {
+        $this->set('type', $this->type ?: 'products');
+        $this->filters = $this->filters ?: [];
+        $this->aggregates = $this->aggregates ?: [];
+        $this->language = $this->language ?: app()->getLocale();
+
         $client = FetchClient::run();
 
-        $term = $this->term ? $this->delegateTo(FetchTerm::class) : null;
+        $term = $this->term ? FetchTerm::run($this->attributes) : null;
 
         $query = new Query();
         $query->setParam('size', $this->limit ?: 100);
@@ -109,7 +121,7 @@ class Search extends Action
         //     }
         // }
 
-        // $query->setQuery($boolQuery);
+        $query->setQuery($boolQuery);
 
         // $query->setHighlight(
         //     $this->highlight()
@@ -123,7 +135,7 @@ class Search extends Action
 
         $search = new ElasticaSearch($client);
 
-        $results = $search
+        return $search
             ->addIndex(
                 $this->index ?: config('getcandy.search.index')
             )
@@ -131,9 +143,43 @@ class Search extends Action
                 ElasticaSearch::OPTION_SEARCH_TYPE,
                 ElasticaSearch::OPTION_SEARCH_TYPE_DFS_QUERY_THEN_FETCH
             )->search($query);
+    }
 
-        $data = collect();
+    public function jsonResponse($result, $request)
+    {
+        $ids = collect();
+        $results = collect($result->getResults());
 
-        dd($results->getResults());
+        if ($results->count()) {
+            foreach ($results as $r) {
+                $ids->push($r->getId());
+            }
+        }
+
+        $models = FetchSearchedIds::run([
+            'model' => $this->type == 'products' ? Product::class : Category::class,
+            'encoded_ids' => $ids->toArray(),
+        ]);
+
+        $resource = ProductCollection::class;
+
+        if ($this->type == 'category') {
+            $resource = CategoryCollection::class;
+        }
+
+
+        $paginator = new LengthAwarePaginator(
+            $models,
+            $result->getTotalHits(),
+            $result->getQuery()->getParam('size'),
+            $this->page ?: 1
+        );
+
+        return (new $resource($paginator))->additional([
+            'meta' => [
+                // 'aggregations' => $aggregations,
+                // 'highlight' => $result->getQuery()->getParam('highlight'),
+            ],
+        ]);
     }
 }
