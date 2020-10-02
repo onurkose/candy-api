@@ -2,6 +2,7 @@
 
 namespace GetCandy\Api\Core\Search\Drivers\Elasticsearch;
 
+use Illuminate\Http\Request;
 use Illuminate\Contracts\Events\Dispatcher;
 use GetCandy\Api\Core\Products\Models\Product;
 use GetCandy\Api\Core\Search\Drivers\AbstractSearchDriver;
@@ -20,15 +21,10 @@ class Elasticsearch extends AbstractSearchDriver
             ]);
         });
     }
+
     public function index($documents, $final = false)
     {
         $type = get_class($documents->first());
-
-        // app()->make(Dispatcher::class)->
-        // $events->listen(ModelsImported::class, function ($event) use ($searchable) {
-        //     $this->resultMessage($event->models, $searchable);
-        // });
-
         switch ($type) {
             case Product::class:
                 IndexProducts::run([
@@ -40,6 +36,18 @@ class Elasticsearch extends AbstractSearchDriver
             default:
             break;
         }
+    }
+
+    public function search(Request $request)
+    {
+        $parseTree = (new \BasicQueryFilter\Parser)->parse($request->filter);
+
+        dd($parseTree);
+        return Search::run([
+            'type' => $request->type ?: 'products',
+            'facets' => $request->filters ?: [],
+            'aggregates' => $request->aggregates ?: [],
+        ]);
     }
 
     public function config()

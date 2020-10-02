@@ -3,9 +3,10 @@
 namespace GetCandy\Api\Core\Search;
 
 use Illuminate\Support\Manager;
+use GetCandy\Api\Core\Search\Contracts\SearchManagerContract;
 use GetCandy\Api\Core\Search\Drivers\Elasticsearch\Elasticsearch;
 
-class SearchManager extends Manager
+class SearchManager extends Manager implements SearchManagerContract
 {
     /**
      * Get a driver instance.
@@ -50,6 +51,6 @@ class SearchManager extends Manager
      */
     public function getDefaultDriver()
     {
-        return config('getcandy.search.driver');
+        return config('getcandy.search.driver', 'elasticsearch');
     }
 }
