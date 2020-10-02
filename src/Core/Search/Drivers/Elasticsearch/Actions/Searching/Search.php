@@ -38,7 +38,7 @@ class Search extends Action
             'offset' => 'nullable|numeric',
             'type' => 'nullable|string',
             'facets' => 'nullable|array',
-            'aggregates' => 'nullable|array',
+            'aggregate' => 'nullable|array',
             'term' => 'nullable|string',
             'language' => 'nullable|string',
             'page' => 'nullable|numeric|min:1'
@@ -72,6 +72,8 @@ class Search extends Action
             //     $this->getSuggest()
             // );
         }
+
+        $aggregations = $this->delegateTo(FetchAggregations::class);
 
         // $query->setSource(
         //     $this->getExcludedFields()
