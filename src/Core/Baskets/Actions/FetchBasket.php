@@ -49,7 +49,7 @@ class FetchBasket extends AbstractAction
     /**
      * Execute the action and return a result.
      *
-     * @return \GetCandy\Api\Core\Channels\Models\Channel|null
+     * @return \GetCandy\Api\Core\Baskets\Models\Basket|null
      */
     public function handle()
     {
@@ -66,7 +66,7 @@ class FetchBasket extends AbstractAction
     /**
      * Returns the response from the action.
      *
-     * @param   \GetCandy\Api\Core\Addresses\Models\Address  $result
+     * @param   $result
      * @param   \Illuminate\Http\Request  $request
      *
      * @return  \GetCandy\Api\Core\Baskets\Resources\BasketResource|\Illuminate\Http\JsonResponse

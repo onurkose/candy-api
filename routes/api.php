@@ -64,6 +64,8 @@
     /*
      * Baskets
      */
+    $router->get('baskets', '\GetCandy\Api\Core\Baskets\Actions\FetchBaskets');
+
     Route::group(['middleware', ['api:channels']], function ($router) {
         $router->post('baskets/resolve', 'Baskets\BasketController@resolve');
         $router->get('baskets/current', 'Baskets\BasketController@current');
