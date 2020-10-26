@@ -34,11 +34,10 @@ $router->group([
 /*
     * Baskets
     */
+
 $router->put('baskets/{id}/user', 'Baskets\BasketController@putUser');
 $router->delete('baskets/{id}/user', 'Baskets\BasketController@deleteUser');
-//$router->resource('baskets', 'Baskets\BasketController', [
-//    'except' => ['index', 'show', 'edit', 'create', 'destroy', 'update'],
-//]);
+
 
 $router->post('baskets', '\GetCandy\Api\Core\Baskets\Actions\CreateBasket');
 $router->get('baskets/{encoded_id}', '\GetCandy\Api\Core\Baskets\Actions\FetchBasket');
