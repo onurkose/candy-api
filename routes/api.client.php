@@ -34,15 +34,17 @@ $router->group([
 /*
     * Baskets
     */
-// $router->get('baskets', 'Products\ProductController@index');
-$router->post('baskets/{id}/meta', 'Baskets\BasketController@addMeta');
-$router->put('baskets/{id}/discounts', 'Baskets\BasketController@addDiscount');
-$router->delete('baskets/{id}/discounts', 'Baskets\BasketController@deleteDiscount');
 $router->put('baskets/{id}/user', 'Baskets\BasketController@putUser');
 $router->delete('baskets/{id}/user', 'Baskets\BasketController@deleteUser');
-$router->resource('baskets', 'Baskets\BasketController', [
-    'except' => ['edit', 'create', 'destroy', 'update'],
-]);
+//$router->resource('baskets', 'Baskets\BasketController', [
+//    'except' => ['index', 'show', 'edit', 'create', 'destroy', 'update'],
+//]);
+
+$router->post('baskets', '\GetCandy\Api\Core\Baskets\Actions\CreateBasket');
+$router->get('baskets/{encoded_id}', '\GetCandy\Api\Core\Baskets\Actions\FetchBasket');
+$router->post('baskets/{encoded_id}/meta', '\GetCandy\Api\Core\Baskets\Actions\AddBasketMeta');
+$router->put('baskets/{encoded_id}/discounts', '\GetCandy\Api\Core\Baskets\Actions\AddBasketDiscount');
+$router->delete('baskets/{encoded_id}/discounts', '\GetCandy\Api\Core\Baskets\Actions\DeleteBasketDiscount');
 
 /*
     * Basket Lines
