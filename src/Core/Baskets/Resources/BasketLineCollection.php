@@ -1,17 +1,17 @@
 <?php
 
-namespace GetCandy\Api\Http\Resources\Baskets;
+namespace GetCandy\Api\Core\Baskets\Resources;
 
 use GetCandy\Api\Http\Resources\AbstractCollection;
 
-class BasketCollection extends AbstractCollection
+class BasketLineCollection extends AbstractCollection
 {
     /**
      * The resource that this resource collects.
      *
      * @var string
      */
-    public $collects = BasketResource::class;
+    public $collects = BasketLineResource::class;
 
     /**
      * Transform the resource collection into an array.

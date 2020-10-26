@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Api\Http\Resources\Baskets;
+namespace GetCandy\Api\Core\Baskets\Resources;
 
 use GetCandy\Api\Http\Resources\AbstractCollection;
 
