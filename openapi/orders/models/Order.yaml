@@ -141,7 +141,7 @@ properties:
   discounts:
     type: string
   transactions:
-    $ref: '#/components/schemas/TransactionCollection'
+    $ref: './payments/responses/TransactionCollection.yaml'
   lines:
     $ref: '../responses/OrderLineCollection.yaml'
   shipping:

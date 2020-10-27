@@ -20,12 +20,12 @@ put:
       content:
         application/json:
           schema:
-            $ref: '../../global/Error.yaml'
+            $ref: './global/Error.yaml'
   operationId: put-orders-orderId-billing-address
   requestBody:
     content:
       application/json:
         schema:
-          $ref: '../../addresses/models/Address.yaml'
+          $ref: './addresses/models/Address.yaml'
     description: All fields are required when an `address_id` is not present.
   description: Update an orders billing address
