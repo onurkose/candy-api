@@ -19,6 +19,6 @@ properties:
   meta:
     type: object
   lines:
-    $ref: '../../basket-lines/responses/BasketLineCollection.yaml'
+    $ref: './basket-lines/responses/BasketLineCollection.yaml'
   order:
-    $ref: '../../orders/responses/OrderResponse.yaml'
+    $ref: './orders/responses/OrderResponse.yaml'

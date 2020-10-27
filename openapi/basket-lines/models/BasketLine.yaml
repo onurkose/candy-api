@@ -18,4 +18,4 @@ properties:
   meta:
     type: object
   variant:
-    $ref: '../../products/responses/ProductVariantResponse.yaml'
+    $ref: './products/responses/ProductVariantResponse.yaml'

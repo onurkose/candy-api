@@ -14,7 +14,7 @@ put:
       content:
         application/json:
           schema:
-            $ref: '../../baskets/responses/BasketResponse.yaml'
+            $ref: './baskets/responses/BasketResponse.yaml'
   operationId: put-basket-lines-basketLineId-add
   description: Update basket line quantity
   requestBody:

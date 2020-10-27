@@ -37,7 +37,7 @@ post:
       content:
           application/json:
             schema:
-              $ref: '../../global/responses/Unprocessable.yaml'
+              $ref: './global/responses/Unprocessable.yaml'
   operationId: post-customer-groups
   requestBody:
     content:

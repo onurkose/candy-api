@@ -18,7 +18,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../../global/responses/Error.yaml'
+            $ref: './global/responses/Error.yaml'
   operationId: get-customer-group-customerGroupId
   description: ''
   parameters:
@@ -42,7 +42,7 @@ put:
       content:
         application/json:
           schema:
-            $ref: '../../global/responses/Unprocessable.yaml'
+            $ref: './global/responses/Unprocessable.yaml'
   operationId: put-customer-groups-customerGroupId
   requestBody:
     content:
@@ -62,7 +62,7 @@ delete:
       content:
         application/json:
           schema:
-            $ref: '../../global/responses/Unprocessable.yaml'
+            $ref: './global/responses/Unprocessable.yaml'
   operationId: delete-customer-groups-customerGroupId
   tags:
     - Customer Groups

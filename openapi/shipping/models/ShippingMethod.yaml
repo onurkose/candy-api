@@ -4,8 +4,8 @@ allOf:
     properties:
       type:
         type: string
-  - $ref: '#/components/schemas/AttributeData'
-  - $ref: '#/components/schemas/LocalisedAttributeData'
+  - $ref: './global/models/AttributeData.yaml'
+  - $ref: './global/models/LocalisedAttributeData.yaml'
   x-examples:
     translated-example:
       id: v8l4pl01

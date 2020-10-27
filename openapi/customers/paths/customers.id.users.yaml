@@ -18,7 +18,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../../global/responses/Error.yaml'
+            $ref: './global/responses/Error.yaml'
   operationId: get-customers-customerId-users
   description: ''
   parameters:

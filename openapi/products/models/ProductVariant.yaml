@@ -78,14 +78,14 @@ properties:
       unit:
         type: string
   product:
-    $ref: '#/components/schemas/ProductResponse'
+    $ref: '../responses/ProductResponse.yaml'
   image:
-    $ref: '#/components/schemas/AssetResponse'
+    $ref: './assets/responses/AssetResponse.yaml'
   customer_pricing:
-    $ref: '#/components/schemas/CustomerPriceCollection'
+    $ref: './products/responses/CustomerPriceCollection.yaml'
   tax:
-    $ref: '#/components/schemas/TaxResponse'
+    $ref: './taxes/responses/TaxResponse.yaml'
   tiers:
-    $ref: '#/components/schemas/ProductTierPriceCollection'
+    $ref: '../responses/ProductTierPriceCollection.yaml'
   options:
     type: object

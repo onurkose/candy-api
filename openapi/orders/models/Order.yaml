@@ -120,9 +120,9 @@ properties:
         type: string
         example: example@example.com
   billing_details:
-    $ref: '#/components/schemas/Address'
+    $ref: './addresses/models/Address.yaml'
   shipping_details:
-    $ref: '#/components/schemas/Address'
+    $ref: './addresses/models/Address.yaml'
   status:
     type: string
     example: payment-received
@@ -137,16 +137,16 @@ properties:
     items:
       type: object
   basket:
-    $ref: '../../baskets/responses/BasketResponse.yaml'
+    $ref: './baskets/responses/BasketResponse.yaml'
   discounts:
     type: string
   transactions:
     $ref: '#/components/schemas/TransactionCollection'
   lines:
-    $ref: '#/components/schemas/OrderLineCollection'
+    $ref: '../responses/OrderLineCollection.yaml'
   shipping:
-    $ref: '#/components/schemas/OrderLineResponse'
+    $ref: '../responses/OrderLineResponse.yaml'
   logs:
-    $ref: '#/components/schemas/ActivityLogCollection'
+    $ref: './activity-log/responses/ActivityLogCollection.yaml'
   user:
-    $ref: '#/components/schemas/UserResponse'
+    $ref: './users/responses/UserResponse.yaml'
