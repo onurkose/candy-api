@@ -36,21 +36,22 @@ properties:
   scopeable:
     type: boolean
   translatable:
-    variant:
-      type: boolean
-    searchable:
-      type: boolean
-    localised:
-      type: boolean
-    type:
-      type: string
-    required:
-      type: boolean
-    lookups:
-      type: array
-      items:
-        type: object
-    system:
-      type: boolean
-    group:
-      $ref: '../../attribute-groups/responses/AttributeGroupResponse.yaml'
+    type: boolean
+  variant:
+    type: boolean
+  searchable:
+    type: boolean
+  localised:
+    type: boolean
+  type:
+    type: string
+  required:
+    type: boolean
+  lookups:
+    type: array
+    items:
+      type: object
+  system:
+    type: boolean
+  group:
+    $ref: '#/components/schemas/AttributeGroupResponse'
