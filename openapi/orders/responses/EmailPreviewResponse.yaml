@@ -1,5 +1,5 @@
 title: EmailPreviewResponse
-  type: object
-  properties:
-    data:
-      $ref: '../models/EmailPreview.yaml'
+type: object
+properties:
+  data:
+    $ref: '../models/EmailPreview.yaml'

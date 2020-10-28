@@ -8,7 +8,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: './baskets/responses/BasketResponse.yaml'
+            $ref: '../../baskets/responses/BasketResponse.yaml'
   operationId: post-basket-lines
   description: Add lines to a basket
   requestBody:
@@ -38,6 +38,6 @@ delete:
             type: object
             properties:
               data:
-                $ref: './baskets/responses/BasketResponse.yaml'
+                $ref: '../../baskets/responses/BasketResponse.yaml'
   operationId: delete-basket-lines
   description: Removes basket lines from a basket

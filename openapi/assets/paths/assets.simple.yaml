@@ -23,5 +23,5 @@ post:
     content:
       multipart/form-data:
         schema:
-          $ref: '../models/AssetSimpleUploadBody.yaml'
+          $ref: '../requests/AssetSimpleUploadBody.yaml'
     description: ''

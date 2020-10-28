@@ -4,4 +4,4 @@ properties:
   id:
     type: string
   product:
-    $ref: '../models/ProductResponse.yaml'
+    $ref: '../responses/ProductResponse.yaml'

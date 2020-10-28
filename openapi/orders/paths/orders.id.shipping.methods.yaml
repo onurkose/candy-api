@@ -14,7 +14,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: './shipping/responses/ShippingPriceCollection.yaml'
+            $ref: '../../shipping/responses/ShippingPriceCollection.yaml'
           examples:
             full-example:
               value:

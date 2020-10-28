@@ -67,7 +67,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: './global/responses/Error.yaml'
+            $ref: '../../global/responses/Error.yaml'
   operationId: get-attributes-attributeId
   parameters:
     - schema:
@@ -91,7 +91,7 @@ put:
       content:
         application/json:
           schema:
-            $ref: './global/responses/Error.yaml'
+            $ref: '../../global/responses/Error.yaml'
           examples:
             not-found-example:
               value:
@@ -120,7 +120,7 @@ put:
     content:
       application/json:
         schema:
-          $ref: '../models/Attribute.yaml'
+          $ref: '../requests/UpdateAttributesBody.yaml'
   tags:
     - Attributes
 delete:
@@ -134,7 +134,7 @@ delete:
       content:
         application/json:
           schema:
-            $ref: './global/responses/Error.yaml'
+            $ref: '../../global/responses/Error.yaml'
           examples:
             not-found-example:
               value:

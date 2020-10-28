@@ -36,7 +36,6 @@ properties:
   scopeable:
     type: boolean
   translatable:
-    type: boolean
     variant:
       type: boolean
     searchable:
@@ -54,4 +53,4 @@ properties:
     system:
       type: boolean
     group:
-      $ref: './attribute-groups/responses/AttributeGroupResponse.yaml'
+      $ref: '../../attribute-groups/responses/AttributeGroupResponse.yaml'

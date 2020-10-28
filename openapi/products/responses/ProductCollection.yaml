@@ -6,4 +6,4 @@ allOf:
         type: array
         items:
           $ref: '../models/Product.yaml'
-  - $ref: './global/models/Pagination.yaml'
+  - $ref: '../../global/models/Pagination.yaml'

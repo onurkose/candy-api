@@ -123,20 +123,20 @@ properties:
   children:
     $ref: '../responses/CategoryCollection.yaml'
   channels:
-    $ref: './channels/responses/ChannelCollection.yaml'
+    $ref: '../../channels/responses/ChannelCollection.yaml'
   ancestors:
     $ref: '../responses/CategoryCollection.yaml'
   routes:
-    $ref: './routes/responses/RouteCollection.yaml'
+    $ref: '../../routes/responses/RouteCollection.yaml'
   layout:
-    $ref: './layouts/responses/LayoutResponse.yaml'
+    $ref: '../../layouts/responses/LayoutResponse.yaml'
   assets:
-    $ref: './assets/responses/AssetCollection.yaml'
+    $ref: '../../assets/responses/AssetCollection.yaml'
   primary_asset:
-    $ref: './assets/responses/AssetResponse.yaml'
+    $ref: '../../assets/responses/AssetResponse.yaml'
   attributes:
-    $ref: './attributes/responses/AttributeCollection.yaml'
+    $ref: '../../attributes/responses/AttributeCollection.yaml'
   customer_groups:
-    $ref: './customer-groups/responses/CustomerGroupCollection.yaml'
+    $ref: '../../customer-groups/responses/CustomerGroupCollection.yaml'
   products:
-    $ref: './products/responses/ProductCollection.yaml'
+    $ref: '../../products/responses/ProductCollection.yaml'

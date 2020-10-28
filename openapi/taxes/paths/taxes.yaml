@@ -12,7 +12,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: './global/responses/Unauthenticated.yaml'
+            $ref: '../../global/responses/Unauthenticated.yaml'
   operationId: get-taxes
   description: Get a paginated list of taxes
   tags:

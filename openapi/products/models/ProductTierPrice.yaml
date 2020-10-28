@@ -10,4 +10,4 @@ properties:
   tax:
     type: number
   group:
-    $ref: './customer-groups/responses/CustomerGroupResponse.yaml'
+    $ref: '../../customer-groups/responses/CustomerGroupResponse.yaml'

@@ -10,5 +10,5 @@ allOf:
     properties:
       meta:
         type: object
-        $ref: './global/models/Pagination.yaml'
+        $ref: '../../global/models/Pagination.yaml'
 description: ''

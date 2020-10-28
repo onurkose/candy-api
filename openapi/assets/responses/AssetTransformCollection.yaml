@@ -1,4 +1,3 @@
-AssetTransformCollection:
 title: AssetTransformCollection
 allOf:
   - type: object
@@ -7,4 +6,4 @@ allOf:
         type: array
         items:
           $ref: '../models/AssetTransform.yaml'
-  - $ref: './global/models/Pagination.yaml'
+  - $ref: '../../global/models/Pagination.yaml'

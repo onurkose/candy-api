@@ -1,5 +1,5 @@
 title: OrderResponse
-  type: object
-  properties:
-    data:
-      $ref: '../models/Order.yaml'
+type: object
+properties:
+  data:
+    $ref: '../models/Order.yaml'

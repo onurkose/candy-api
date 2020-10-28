@@ -1,10 +1,9 @@
-AssociationGroupCollection:
-  title: AssociationGroupCollection
-  allOf:
-    - type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '../models/AssociationGroup.yaml'
-    - $ref: './global/models/Pagination.yaml'
+title: AssociationGroupCollection
+allOf:
+  - type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '../models/AssociationGroup.yaml'
+  - $ref: '../../global/models/Pagination.yaml'

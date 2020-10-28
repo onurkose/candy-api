@@ -80,11 +80,11 @@ properties:
   product:
     $ref: '../responses/ProductResponse.yaml'
   image:
-    $ref: './assets/responses/AssetResponse.yaml'
+    $ref: '../../assets/responses/AssetResponse.yaml'
   customer_pricing:
-    $ref: './products/responses/CustomerPriceCollection.yaml'
+    $ref: '../../products/responses/CustomerPriceCollection.yaml'
   tax:
-    $ref: './taxes/responses/TaxResponse.yaml'
+    $ref: '../../taxes/responses/TaxResponse.yaml'
   tiers:
     $ref: '../responses/ProductTierPriceCollection.yaml'
   options:

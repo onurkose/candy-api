@@ -14,7 +14,7 @@ put:
       content:
         application/json:
           schema:
-            $ref: './baskets/responses/BasketResponse.yaml'
+            $ref: '../../baskets/responses/BasketResponse.yaml'
   operationId: put-basket-lines-basketLineId-remove
   description: Removes quantity from a basket line
   requestBody:

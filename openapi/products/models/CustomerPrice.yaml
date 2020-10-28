@@ -6,6 +6,6 @@ properties:
   price:
     type: number
   tax:
-    $ref: './taxes/responses/TaxResponse.yaml'
+    $ref: '../../taxes/responses/TaxResponse.yaml'
   group:
-    $ref: './customer-groups/responses/CustomerGroupResponse.yaml'
+    $ref: '../../customer-groups/responses/CustomerGroupResponse.yaml'

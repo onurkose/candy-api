@@ -34,4 +34,4 @@ properties:
   transforms:
     $ref: '../responses/AssetTransformCollection.yaml'
   tags:
-    $ref: './tags/responses/TagCollection.yaml'
+    $ref: '../../tags/responses/TagCollection.yaml'

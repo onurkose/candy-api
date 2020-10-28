@@ -1,3 +1,4 @@
+title: OrderCollection
 allOf:
   - type: object
     properties:
@@ -5,4 +6,4 @@ allOf:
         type: array
         items:
           $ref: '../models/Order.yaml'
-  - $ref: './global/models/Pagination.yaml'
+  - $ref: '../../global/models/Pagination.yaml'

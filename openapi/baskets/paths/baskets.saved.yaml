@@ -14,7 +14,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: './global/responses/Unauthenticated.yaml'
+            $ref: '../../global/responses/Unauthenticated.yaml'
           examples:
             example-1:
               value:

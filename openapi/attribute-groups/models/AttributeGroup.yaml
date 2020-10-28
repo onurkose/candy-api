@@ -21,4 +21,4 @@ properties:
     type: integer
     format: int32
   attributes:
-    $ref: './attributes/responses/AttributeCollection.yaml'
+    $ref: '../../attributes/responses/AttributeCollection.yaml'

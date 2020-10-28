@@ -14,13 +14,13 @@ put:
       content:
         application/json:
           schema:
-            $ref: './baskets/responses/BasketResponse.yaml'
+            $ref: '../../baskets/responses/BasketResponse.yaml'
     '404':
       description: Not Found
       content:
         application/json:
           schema:
-            $ref: './global/responses/Error.yaml'
+            $ref: '../../global/responses/Error.yaml'
   operationId: put-basket-lines-basketLineId
   description: "Update a basket line based on it's ID."
   requestBody:
