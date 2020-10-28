@@ -30,7 +30,7 @@ x-examples:
           en: Category description
       meta_keywords:
         webstore:
-          en: null
+          en: ""
       name:
         webstore:
           en: Category name
@@ -58,7 +58,7 @@ x-examples:
           en: Category description
       meta_keywords:
         webstore:
-          en: null
+          en: ""
       name:
         webstore:
           en: Category name
